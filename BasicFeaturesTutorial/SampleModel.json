@@ -1,0 +1,12 @@
+[
+    {
+        "FirstName": "Bob",
+		"LastName": "Baggins",
+		"Workplace": "Robotmaster",
+        "Hobbies": [
+            "Mountain Biking",
+            "Gaming",
+            "Music"
+        ]
+    }
+]

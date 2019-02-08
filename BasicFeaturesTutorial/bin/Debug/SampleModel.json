@@ -1,0 +1,12 @@
+[
+    {
+        "Id": 2,
+        "FirstName": "Bob",
+        "LastName": "Baggins",
+        "Hobbies": [
+            "Mountain Biking",
+            "Gaming",
+            "Music"
+        ]
+    }
+]
