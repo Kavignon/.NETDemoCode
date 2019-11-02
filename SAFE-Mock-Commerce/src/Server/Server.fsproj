@@ -5,8 +5,10 @@
   </PropertyGroup>
   <ItemGroup>
     <None Include="paket.references" />
-    <Compile Include="../Shared/Shared.fs" />
-        <Compile Include="Server.fs" />
+    <Compile Include="..\Shared\Shared.fs">
+        <Link>Shared.fs</Link>
+    </Compile>
+    <Compile Include="CatalogApiWorkflows.fs" />
     <Compile Include="Server.fs" />
   </ItemGroup>
     <ItemGroup>
