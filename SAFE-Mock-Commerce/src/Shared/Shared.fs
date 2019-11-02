@@ -4,6 +4,13 @@ open FSharp.Data
 
 type Counter = { Value : int }
 
+type ProductCatalogue = XmlProvider<"./StoreProducts.xml"> // TODO: Enhancement - Move the data to a SQL db in Azure and load data from there.
+
+type SerializedStoreProduct =
+    | Headphones of value: ProductCatalogue.Headphone
+    | ReadingMaterial of value: ProductCatalogue.Book
+    | Computer of value: ProductCatalogue.Computer
+
 type ProductDimension = {
     Heigth: float
     Width: float
@@ -202,15 +209,6 @@ with
         | Television (t, _) -> t.ProductDetails.Price
         | Laptop (l, _) -> l.Details.Price
         | GameConsole (gc, _) -> gc.Hardware.Details.Price
-
-module StoreCatalogue =
-    type ProductCatalogue = XmlProvider<"./StoreProducts.xml"> // TODO: Enhancement: Move the data to a SQL db in Azure and load data from there.
-    let productCatalogue = ProductCatalogue.GetSample()
-
-    type GeneratedTypeFromStore =
-        | Headphones                of value: ProductCatalogue.Headphone
-        | ReadingMaterial           of value: ProductCatalogue.Book
-        | Computer                  of value: ProductCatalogue.Computer
 
 module Route =
     /// Defines how routes are generated on server and mapped from client
