@@ -7,9 +7,9 @@ type Counter = { Value : int }
 type ProductCatalogue = XmlProvider<"./StoreProducts.xml"> // TODO: Enhancement - Move the data to a SQL db in Azure and load data from there.
 
 type StoreProductDto =
-    | Headphones of value: ProductCatalogue.Headphone
-    | ReadingMaterial of value: ProductCatalogue.Book
-    | Computer of value: ProductCatalogue.Computer
+    | HeadphoneDto of value: ProductCatalogue.Headphone
+    | ReadingMaterialDto of value: ProductCatalogue.Book
+    | ComputerDto of value: ProductCatalogue.Computer
 
 type ProductDimension = {
     Height: float
