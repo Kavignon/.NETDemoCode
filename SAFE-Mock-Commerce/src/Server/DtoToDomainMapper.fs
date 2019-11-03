@@ -46,6 +46,8 @@ let convertToBrand brand =
     | _ -> None
     |> Option.defaultValue Brand.NotSupportedByStore
 
+let generateProductSku() = Guid.NewGuid().ToString()
+
 let makeProductInformationFrom productDto =
     let productDimensions =
         match productDto with
