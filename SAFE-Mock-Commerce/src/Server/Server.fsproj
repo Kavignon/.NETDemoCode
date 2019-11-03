@@ -8,6 +8,7 @@
     <Compile Include="..\Shared\Shared.fs">
         <Link>Shared.fs</Link>
     </Compile>
+    <Compile Include="DtoToDomainMapper.fs" />
     <Compile Include="CatalogApiWorkflows.fs" />
     <Compile Include="Server.fs" />
   </ItemGroup>
