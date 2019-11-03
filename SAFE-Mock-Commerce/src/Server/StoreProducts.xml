@@ -11,6 +11,9 @@
         <ReviewAverage Value="4.2"/>
         <InStock Value="true"/>
         <Quantity Value="20"/>
+        <Height Value="7.31"/>
+        <Width Value="2.94"/>
+        <Depth Value="10.44"/>
     </book>
     <book>
         <AuthorName Value="Jon Skeet"/>
@@ -23,17 +26,21 @@
         <ReviewAverage Value="4.2"/>
         <InStock Value="true"/>
         <Quantity Value="1"/>
+        <Height Value="7.31"/>
+        <Width Value="2.94"/>
+        <Depth Value="10.44"/>
     </book>
     <headphone>
         <Manufacturer Name="Sony"/>
         <Color Value="Black"/>
         <Fit Value="OverEar"/>
         <Model Name="WH1000XM3"/>
-        <Heigth Value="7.31"/>
+        <Height Value="7.31"/>
         <Width Value="2.94"/>
         <Depth Value="10.44"/>
         <Price Value="348.00"/>
         <ReleaseDate Value="2018-07-11"/>
+        <ReviewAverage Value="4.6"/>
         <Weigth Value="2.95"/>
         <IsWireless Value="true"/>
         <BatteryLife Value="30"/>
@@ -44,11 +51,12 @@
         <Color Value="White"/>
         <Fit Value="OverEar"/>
         <Model Name="QuietComfort 35 Series II"/>
-        <Heigth Value="3.2"/>
+        <Height Value="3.2"/>
         <Width Value="6.7"/>
         <Depth Value="7.31"/>
         <Price Value="349.00"/>
         <ReleaseDate Value="2017-02-12"/>
+        <ReviewAverage Value="4.4"/>
         <Weigth Value="2.25"/>
         <IsWireless Value="true"/>
         <BatteryLife Value="20"/>
@@ -58,19 +66,22 @@
         <Manufacturer>Asus</Manufacturer>
         <Model Series="ZenBook" Number="UX433FA-DH74"/>
         <Resolution Value="FHD"/>
-        <Weight Value="3.9"/>
+        <ReviewAverage Value="4.7"/>
+        <Weight Value="1.18"/>
         <Ram Value="16Gb"/>
         <Storage Value="512Gb" HardDiskTechnology="SSD"/>
         <OperatingSystem Value="Windows 10"/>
         <Price Value="1499.99"/>
         <Color Value="Royal Blue"/>
-        <Height Value="16"/>
-        <Width Value="19.8"/>
+        <Depth Value="0.32" />
+        <Height Value="0.016"/>
+        <Width Value="0.198"/>
         <CPU Manufacturer="Intel" Series="Core-i7" SeriesModel="8565u" CoreCount="4" ClockSpeed="1.80" OverclockedSpeed="4.60"/>
     </computer>
         <computer>
         <Manufacturer>Apple</Manufacturer>
         <Model Series="Macbook" Number="7th-generation"/>
+        <ReviewAverage Value="4.1"/>
         <Resolution Value="4K"/>
         <Weight Value="1.83"/>
         <Ram Value="8Gb"/>
@@ -78,8 +89,9 @@
         <OperatingSystem Value="OS X 10.8 Mountain Lion"/>
         <Price Value="1729.00"/>
         <Color Value="Space Grey"/>
-        <Height Value="16"/>
-        <Width Value="19.8"/>
+        <Depth Value="0.3493" />
+        <Height Value="0.0155"/>
+        <Width Value="0.2407"/>
         <CPU Manufacturer="Intel" Series="Core-i5" SeriesModel="8565u" CoreCount="2" ClockSpeed="2.30" OverclockedSpeed="3.60"/>
     </computer>
 </items>
