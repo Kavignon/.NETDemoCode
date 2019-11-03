@@ -12,7 +12,7 @@ type StoreProductDto =
     | Computer of value: ProductCatalogue.Computer
 
 type ProductDimension = {
-    Heigth: float
+    Height: float
     Width: float
     Depth: float option
 }
