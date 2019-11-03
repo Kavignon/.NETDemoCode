@@ -17,7 +17,7 @@ let getStoreHeadphones headphones storeProductList =
             AreWireless = h.IsWireless.Value
             IsNoiseCancelActive = h.IsNoiseCancelled.Value
         }
-        WirelessHeadphones(product, "WireLessId")
+        WirelessHeadphones(product, generateProductSku())
     )
     |> Array.append storeProductList
 
@@ -28,15 +28,15 @@ let getStoreBooks books storeProductList =
         let product = {
             Details = bookInfo
             AuthorName = b.AuthorName.Value
-            Format = KindleVersion // Missing format from XML document
-            ISBN = "" // Missing ISBN from XML document
-            Summary = "" // Missing Summary from XML document
-            PageCount = b.PageCount.Value
-            Language = English
-            Category = Fantasy // Missing function to convert from the XML document
-            ReleasedDate = DateTime.Now // Missing release date from XML document
+            Format = KindleVersion // TODO: Missing format from XML document & function to convert
+            ISBN = "" // TODO: Missing ISBN from XML document & function to convert
+            Summary = "" // TODO: Missing Summary from XML document & function to convert
+            PageCount = b.PageCount.Value // TODO: Missing function to convert from XML
+            Language = English // TODO: Misssing supported languages from XML document & function to convert
+            Category = Fantasy // TODO: Missing Missing function to convert from the XML document & function to convert
+            ReleasedDate = DateTime.Now // Missing release date from XML document & function to convert
         }
-        Book(product, "SomeBookId")
+        Book(product, generateProductSku())
     )
     |> Array.append storeProductList
 
@@ -63,7 +63,7 @@ let getStoreComputers computers storeProductList =
             RunningOperatingSystem = Windows10 // TODO: Need to specify from XML
             DeviceInputs = [] // TODO: Need to specify from XML
         }
-        Laptop(product, "LaptopId")
+        Laptop(product, generateProductSku())
     )
     |> Array.append storeProductList
 
