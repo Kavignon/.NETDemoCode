@@ -6,7 +6,7 @@ type Counter = { Value : int }
 
 type ProductCatalogue = XmlProvider<"./StoreProducts.xml"> // TODO: Enhancement - Move the data to a SQL db in Azure and load data from there.
 
-type SerializedStoreProduct =
+type StoreProductDto =
     | Headphones of value: ProductCatalogue.Headphone
     | ReadingMaterial of value: ProductCatalogue.Book
     | Computer of value: ProductCatalogue.Computer
@@ -180,14 +180,14 @@ type Book = {
     ReleasedDate:   DateTime
 }
 
-type HeadphoneFit =
+type HeadphoneShape =
     | ``In ear``
     | ``On ear``
     | ``Over ear``
 
 type HeadphoneProduct = {
     Details:                CommonProductInformation
-    Fit:                    HeadphoneFit
+    Shape:                  HeadphoneShape
     BatteryLife:            int option
     ReleaseDate:            DateTime;
     AreWireless:            bool
