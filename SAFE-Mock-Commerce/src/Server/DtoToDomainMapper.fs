@@ -47,18 +47,35 @@ let convertToBrand brand =
     |> Option.defaultValue Brand.NotSupportedByStore
 
 let makeProductInformationFrom productDto =
+    let productDimensions =
+        match productDto with
+        | Headphones h ->
+            {
+                Height = float h.Height.Value
+                Width = float h.Width.Value
+                Depth = Some (float h.Depth.Value)
+            }
+        | Computer c ->
+            {
+                Height = float c.Height.Value
+                Width = float c.Width.Value
+                Depth = Some (float c.Depth.Value)
+            }
+        | ReadingMaterial rm ->
+            {
+                Height = float rm.Height.Value
+                Width = float rm.Width.Value
+                Depth = Some (float rm.Depth.Value)
+            }
+
     match productDto with
     | Headphones headphoneDto ->
         {
             Name = headphoneDto.Model.Name
             Weight = float headphoneDto.Weigth.Value
             ShippingWeight = float headphoneDto.Weigth.Value
-            AverageReviews = 4.2 // TODO: Add AverageReview field in the XML
-            Dimensions = {
-                Heigth = float headphoneDto.Heigth.Value
-                Width = float headphoneDto.Width.Value
-                Depth = Some (float headphoneDto.Depth.Value)
-            }
+            AverageReviews = float headphoneDto.ReviewAverage.Value
+            Dimensions = productDimensions
             Price = float headphoneDto.Price.Value
             Color = convertToProductColor headphoneDto.Color.Value
             Brand = convertToBrand headphoneDto.Manufacturer.Name
@@ -69,12 +86,7 @@ let makeProductInformationFrom productDto =
             Weight = float readingDto.ShippingWeight.Value
             ShippingWeight = float readingDto.ShippingWeight.Value
             AverageReviews = float readingDto.ReviewAverage.Value
-            Dimensions = {
-                // TODO: Add dimensions to book definition
-                Heigth = 1.00
-                Width = 1.00
-                Depth = Some 1.00
-            }
+            Dimensions = productDimensions
             Price = float readingDto.Price.Value
             Color = Red // Provide book color in definition
             Brand = Toshiba //Waiting for up book publisher companies in definition
@@ -84,12 +96,8 @@ let makeProductInformationFrom productDto =
             Name = computerDto.Model.Series + " " + computerDto.Model.Number
             Weight = float computerDto.Weight.Value
             ShippingWeight = float computerDto.Weight.Value
-            AverageReviews = 4.5 // TODO: Add AverageReview field in the XML
-            Dimensions = {
-                Heigth = float computerDto.Height.Value
-                Width = float computerDto.Height.Value
-                Depth = Some (float computerDto.Height.Value)
-            }
+            AverageReviews = float computerDto.ReviewAverage.Value
+            Dimensions = productDimensions
             Price = float computerDto.Price.Value
             Color = convertToProductColor computerDto.Color.Value
             Brand = convertToBrand computerDto.Manufacturer
