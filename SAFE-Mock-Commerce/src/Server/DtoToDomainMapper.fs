@@ -51,19 +51,19 @@ let generateProductSku() = Guid.NewGuid().ToString()
 let makeProductInformationFrom productDto =
     let productDimensions =
         match productDto with
-        | Headphones h ->
+        | HeadphoneDto h ->
             {
                 Height = float h.Height.Value
                 Width = float h.Width.Value
                 Depth = Some (float h.Depth.Value)
             }
-        | Computer c ->
+        | ComputerDto c ->
             {
                 Height = float c.Height.Value
                 Width = float c.Width.Value
                 Depth = Some (float c.Depth.Value)
             }
-        | ReadingMaterial rm ->
+        | ReadingMaterialDto rm ->
             {
                 Height = float rm.Height.Value
                 Width = float rm.Width.Value
@@ -71,7 +71,7 @@ let makeProductInformationFrom productDto =
             }
 
     match productDto with
-    | Headphones headphoneDto ->
+    | HeadphoneDto headphoneDto ->
         {
             Name = headphoneDto.Model.Name
             Weight = float headphoneDto.Weigth.Value
@@ -82,7 +82,7 @@ let makeProductInformationFrom productDto =
             Color = convertToProductColor headphoneDto.Color.Value
             Brand = convertToBrand headphoneDto.Manufacturer.Name
         }
-    | ReadingMaterial readingDto ->
+    | ReadingMaterialDto readingDto ->
         {
             Name = readingDto.Name.Value
             Weight = float readingDto.ShippingWeight.Value
@@ -93,7 +93,7 @@ let makeProductInformationFrom productDto =
             Color = Red // Provide book color in definition
             Brand = Toshiba //Waiting for up book publisher companies in definition
         }
-    | Computer computerDto ->
+    | ComputerDto computerDto ->
         {
             Name = computerDto.Model.Series + " " + computerDto.Model.Number
             Weight = float computerDto.Weight.Value
