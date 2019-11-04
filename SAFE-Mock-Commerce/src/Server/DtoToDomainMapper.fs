@@ -107,8 +107,8 @@ let makeProductInformationFrom productDto =
 
 let convertDtoToStoreProduct productDto =
     match productDto with
-    | HeadphoneDto h ->
-        let headphonesInfo = makeProductInformationFrom h
+    | HeadphoneDto h as hDto ->
+        let headphonesInfo = makeProductInformationFrom hDto
         let product = {
             Details = headphonesInfo
             Shape = getHeadphoneShape h
