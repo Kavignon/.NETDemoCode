@@ -161,22 +161,26 @@ type BookCategory =
     | Fantasy
     | ``Computer Science``
     | ``Graphic Novel``
+    | CategoryNotSupportedByStore
+
 
 type BookFormat =
+    | MassPaperBack
     | Paperback
     | Hardcover
-    | Pdf
     | KindleVersion
+    | NotSupportedByStore
 
 type Book = {
     AuthorName:     string
-    Format:         BookFormat
+    SupportedFormats : BookFormat seq
     Summary:        string
     Details:        CommonProductInformation
     Category:       BookCategory
     PageCount:      int
     ISBN:           string
-    Language:       SupportedLanguage
+    SupportedLanguages : SupportedLanguage seq
+    Publisher: string
     ReleasedDate:   DateTime
 }
 
