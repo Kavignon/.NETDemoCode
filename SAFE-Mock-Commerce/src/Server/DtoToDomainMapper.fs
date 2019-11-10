@@ -105,38 +105,60 @@ let makeProductInformationFrom productDto =
             Brand = convertToBrand computerDto.Manufacturer
         }
 
-let convertDtoToStoreProduct productDto =
-    match productDto with
-    | HeadphoneDto h as hDto ->
-        let headphonesInfo = makeProductInformationFrom hDto
-        let product = {
-            Details = headphonesInfo
-            Shape = getHeadphoneShape h
-            BatteryLife = Some(h.BatteryLife.Value)
-            ReleaseDate = h.ReleaseDate.Value
-            AreWireless = h.IsWireless.Value
-            IsNoiseCancelActive = h.IsNoiseCancelled.Value
-        }
-        WirelessHeadphones(product, generateProductSku())
+let convertToWirelessHeadphones productCommonInfo headphoneDetails =
+    let product = {
+        Details = productCommonInfo
+        Shape = getHeadphoneShape headphoneDetails
+        BatteryLife = Some(headphoneDetails.BatteryLife.Value)
+        ReleaseDate = headphoneDetails.ReleaseDate.Value
+        AreWireless = headphoneDetails.IsWireless.Value
+        IsNoiseCancelActive = headphoneDetails.IsNoiseCancelled.Value
+    }
 
-// // let getStoreBooks books storeProductList =
-// //     books
-// //     |> Array.map(fun b ->
-// //         let bookInfo = makeProductInformationFrom (ReadingMaterial b)
-// //         let product = {
-// //             Details = bookInfo
-// //             AuthorName = b.AuthorName.Value
-// //             Format = KindleVersion // TODO: Missing format from XML document & function to convert
-// //             ISBN = "" // TODO: Missing ISBN from XML document & function to convert
-// //             Summary = "" // TODO: Missing Summary from XML document & function to convert
-// //             PageCount = b.PageCount.Value // TODO: Missing function to convert from XML
-// //             Language = English // TODO: Misssing supported languages from XML document & function to convert
-// //             Category = Fantasy // TODO: Missing Missing function to convert from the XML document & function to convert
-// //             ReleasedDate = DateTime.Now // Missing release date from XML document & function to convert
-// //         }
-// //         Book(product, generateProductSku())
-// //     )
-// //     |> Array.append storeProductList
+    WirelessHeadphones(product, generateProductSku())
+
+let convertToBook productCommonInfo (bookDetails: ProductCatalogue.Book) =
+    let convertToSupportedLanguage languageStr =
+        match languageStr with
+        | "English" -> English
+        | "French" -> French
+        | _ -> SupportedLanguage.NotSupportedByStore
+
+    let convertToFormat formatStr =
+        match formatStr with
+        | "Mass paper back" -> MassPaperBack
+        | "Paperback" -> Paperback
+        | "Hardcover" -> Hardcover
+        | "Kindle" -> KindleVersion
+        | _ -> NotSupportedByStore
+
+    let convertToBookCategory categoryStr =
+        match categoryStr with
+        | Prefix "Fan" _ -> Fantasy
+        | Prefix "Com" _ & Suffix "Sci" _ -> ``Computer Science``
+        | Prefix "Grap" _ & Suffix "Nov" _ -> ``Graphic Novel``
+        | _ ->  CategoryNotSupportedByStore
+
+    let product = {
+        Details = productCommonInfo
+        AuthorName = bookDetails.AuthorName.Value
+        SupportedFormats = bookDetails.Formats |> Array.map(fun f -> convertToFormat f.Value)
+        ISBN = bookDetails.Isbn.Value
+        Summary = bookDetails.Summary.Value
+        PageCount = bookDetails.PageCount.Value
+        SupportedLanguages =  [ convertToSupportedLanguage bookDetails.Language.Value ]
+        Publisher = bookDetails.Publisher.Value
+        Category = convertToBookCategory bookDetails.Category.Value
+        ReleasedDate = bookDetails.ReleaseDate.Value
+    }
+
+    Book(product, generateProductSku())
+
+let convertDtoToStoreProduct productDto =
+    let productCommonInfo = makeProductInformationFrom productDto
+    match productDto with
+    | HeadphoneDto details -> convertToWirelessHeadphones productCommonInfo details
+    | ReadingMaterialDto details -> convertToBook productCommonInfo details
 
 // // let getStoreComputers computers storeProductList =
 // //     computers
