@@ -173,13 +173,13 @@ type BookFormat =
 
 type Book = {
     AuthorName:     string
-    SupportedFormats : BookFormat seq
+    SupportedFormats : BookFormat list // using seq removes the structural equality
     Summary:        string
     Details:        CommonProductInformation
     Category:       BookCategory
     PageCount:      int
     ISBN:           string
-    SupportedLanguages : SupportedLanguage seq
+    SupportedLanguages : SupportedLanguage list // using seq removes the structural equality
     Publisher: string
     ReleasedDate:   DateTime
 }
@@ -198,7 +198,9 @@ type HeadphoneProduct = {
     IsNoiseCancelActive:    bool
 }
 
-// Removed by default here; not necessary.
+// override equality and deny comparison
+// // [<CustomEquality; CustomComparison>]
+
 type StoreProduct =
     | Book                  of novel:       Book * SkuId: string
     | WirelessHeadphones    of headphones:  HeadphoneProduct * SkuId: string
@@ -206,6 +208,14 @@ type StoreProduct =
     | Laptop                of laptop:      Computer * SkuId: string
     | GameConsole           of console:     GameConsole * SkuId: string
 with
+    member x.ProductId =
+        match x with
+        | Book (_, id) -> id
+        | WirelessHeadphones (_, id) -> id
+        | Television (_,id) -> id
+        | Laptop (_, id) -> id
+        | GameConsole (_, id) -> id
+
     member x.ProductPrice =
         match x with
         | Book (b, _) -> b.Details.Price
@@ -213,6 +223,37 @@ with
         | Television (t, _) -> t.ProductDetails.Price
         | Laptop (l, _) -> l.Details.Price
         | GameConsole (gc, _) -> gc.Hardware.Details.Price
+
+module ShoppingCart =
+
+    type PaymentMethod =
+        | Visa of cardOwnerName: string * cardNumber: string * expirationDate: DateTime * cardSecurityCode: int * wasCloned: bool
+        | Debit of cardOwnerName: string * cardNumber: string * BankName: string * wasCloned: bool
+
+        member x.isCardValid =
+            match x with
+            | Visa(_, _, exprDate, _, wasCloned) -> DateTime.Now < exprDate && not wasCloned
+            | Debit(_, _, _, wasCloned) -> not wasCloned
+
+        member x.cardOwnerName =
+            match x with
+            | Visa (ownerName, _, _, _, _) -> ownerName
+            | Debit (ownerName, _, _, _) -> ownerName
+
+    type ShoppingCart = {
+        SelectedPaymentMethod: PaymentMethod
+        SelectedItems: Map<StoreProduct, int> option
+    }
+    with
+
+    member x.isCartEmpty = x.SelectedItems |> Option.toList |> List.isEmpty
+
+    member x.getCartSubtotal =
+        match x.SelectedItems with
+        | None -> 0.00
+        | Some storeProducts ->
+            (0.00, storeProducts)
+            ||> Map.fold(fun accumulatedSubtotal product qty -> accumulatedSubtotal + (product.ProductPrice * float qty))
 
 module Route =
     /// Defines how routes are generated on server and mapped from client
