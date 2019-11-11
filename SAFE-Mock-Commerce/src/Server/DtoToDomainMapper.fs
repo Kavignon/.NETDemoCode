@@ -159,30 +159,3 @@ let convertDtoToStoreProduct productDto =
     match productDto with
     | HeadphoneDto details -> convertToWirelessHeadphones productCommonInfo details
     | ReadingMaterialDto details -> convertToBook productCommonInfo details
-
-// // let getStoreComputers computers storeProductList =
-// //     computers
-// //     |> Array.map(fun computer ->
-// //         let computerInfo = makeProductInformationFrom (Computer computer)
-// //         let computerCpu = {
-// //             Details = computerInfo // TODO: Need function to retrieve it from XmlProvider<...>.Computer
-// //             CoreCount = 4 // TODO: Need function to retrieve it from XmlProvider<...>.Computer
-// //             Series = Intel(IntelCorei7) // TODO: Need function to retrieve it from XmlProvider<...>.Computer
-// //             ProcessorSpeed = 3.2 // TODO: Need function to retrieve it from XmlProvider<...>.Computer
-// //             OverclockedSpeed = 5.2 // TODO: Need function to retrieve it from XmlProvider<...>.Computer
-// //             Wattage = 80 // TODO: Need function to retrieve it from XmlProvider<...>.Computer
-// //             YearModel = DateTime.Today // TODO: Need function to retrieve it from XmlProvider<...>.Computer + Should be int, not DateTime
-// //         }
-// //         let product = {
-// //             Details = computerInfo
-// //             Resolution = HighDefinition 1920
-// //             Cpu = computerCpu
-// //             Ram = 8192 // TODO: Need to specify RAM from XML
-// //             CacheMemory = None // TODO: Need to specify field in computer + function to retrieve it from the generated type
-// //             DdrRam = None // TODO: Need to specify from XML
-// //             RunningOperatingSystem = Windows10 // TODO: Need to specify from XML
-// //             DeviceInputs = [] // TODO: Need to specify from XML
-// //         }
-// //         Laptop(product, generateProductSku())
-// //     )
-// //     |> Array.append storeProductList
