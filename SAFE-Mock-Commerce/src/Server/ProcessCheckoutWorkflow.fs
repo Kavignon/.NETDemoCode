@@ -2,6 +2,7 @@ module ProcessCheckoutWorkflow
 
 open Shared
 open Shared.ShoppingCart
+open Shared.CustomerInfo
 
 // Should be depend on distance...
 let shippingFee = 15.00m
@@ -43,8 +44,8 @@ let getOrderTotalTaxes selectedProducts =
         | _ -> accTaxes
     )
 
-let processCartCheckout cart =
-    if not cart.SelectedPaymentMethod.isCardValid  && cart.CustomerInfo.ContactInfo.CustomerName.Fullname = cart.SelectedPaymentMethod.cardOwnerName then
+let processCartCheckout cart customerInfo =
+    if not cart.SelectedPaymentMethod.isCardValid  && customerInfo.ContactInfo.CustomerName.Fullname = cart.SelectedPaymentMethod.cardOwnerName then
         printfn "Cannot proceed to checkout with invalid payment method."
     else
         match cart.SelectedItems with
