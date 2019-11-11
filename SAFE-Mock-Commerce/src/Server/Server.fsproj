@@ -10,6 +10,7 @@
     </Compile>
     <Compile Include="DtoToDomainMapper.fs" />
     <Compile Include="CatalogApiWorkflows.fs" />
+    <Compile Include="ProcessCheckoutWorkflow.fs" />
     <Compile Include="Server.fs" />
   </ItemGroup>
     <ItemGroup>
