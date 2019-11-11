@@ -1,7 +1,7 @@
 module ProcessCheckoutWorkflow
 
-open ShoppingCart
 open Shared
+open Shared.ShoppingCart
 
 // Should be depend on distance...
 let shippingFee = 15.00m
@@ -23,7 +23,9 @@ with
             | Some fee -> fee + billTotal
             | None -> billTotal
 
-let getCartItemTotal selectedProducts = (0, selectedProducts) ||> Map.fold(fun accTotal _ count -> accTotal + count)
+let getCartItemTotal (selectedProducts: Map<StoreProduct, int>) =
+    ([], selectedProducts)
+    ||> Map.fold(fun totalList product count -> (totalList, List.replicate count product) ||> List.append)
 
 let getOrderTotalTaxes selectedProducts =
     (0.00m, selectedProducts)
