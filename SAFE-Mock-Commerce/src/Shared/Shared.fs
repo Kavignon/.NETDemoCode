@@ -356,6 +356,13 @@ module TypeCreator =
     | MissingPassword
     | UsernameNotFound of string
     | ErrorWhileValidatingEmail of EmailAddress.EmailValidationError
+    with
+        member x.ErrorMessage =
+            match x with
+            | MissingUsername -> "Missing username..."
+            | MissingPassword -> "Missing password..."
+            | UsernameNotFound u -> sprintf "The following username wasn't found in the databse: %s" u
+            | ErrorWhileValidatingEmail error -> sprintf "The following error occurred: %s" (error.getErroßr())
 
     /// Create a constrained string using the constructor provided
     /// Return Error if input is null. empty, or does not match the regex pattern
