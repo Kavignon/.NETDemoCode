@@ -333,6 +333,47 @@ module CustomerInfo =
 
         override this.GetHashCode() = hash this.AccountId
 
+module UserCredentials =
+    open EmailAddress
+
+    // Json web token type.
+    type JWT = string
+
+    // Login credentials.
+    type SecurityCredentials = {
+        UserName   : VerifiedEmail
+        Password   : string
+        Token      : JWT
+    }
+    with
+        member x.IsValid() = String.IsNullOrEmpty(x.UserName.Value) && String.IsNullOrEmpty(x.Password)
+
+module TypeCreator =
+    open EmailAddress
+
+    type LoginValidationError =
+    | MissingUsername
+    | MissingPassword
+    | UsernameNotFound of string
+    | ErrorWhileValidatingEmail of EmailAddress.EmailValidationError
+
+    /// Create a constrained string using the constructor provided
+    /// Return Error if input is null. empty, or does not match the regex pattern
+    let createEmailLike ctor pattern str =
+        if String.IsNullOrEmpty(str) then
+            Error (ErrorWhileValidatingEmail (NoInputOrEmpty "Emails must not be null or empty"))
+        elif System.Text.RegularExpressions.Regex.IsMatch(str,pattern) then
+            Ok (ctor str)
+        else
+            let msg = sprintf "Emails: '%s' must match the pattern '%s'" str pattern
+            Error (ErrorWhileValidatingEmail(NotAnEmail msg))
+
+    /// Create an EmailAddress from a string
+    /// Return Error if input is null, empty, or doesn't have an "@" in it
+    let createEmail str =
+        let pattern = ".+@.+" // anything separated by an "@"
+        createEmailLike Email pattern str
+
 module Route =
     /// Defines how routes are generated on server and mapped from client
     let builder typeName methodName =
