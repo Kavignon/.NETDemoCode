@@ -255,7 +255,24 @@ module ShoppingCart =
             (0.00, storeProducts)
             ||> Map.fold(fun accumulatedSubtotal product qty -> accumulatedSubtotal + (product.ProductPrice * float qty))
 
+module EmailAddress =
+    type EmailValidationError =
+        | NoInputOrEmpty of string
+        | NotAnEmail of string
+    with
+        member x.getError() =
+            match x with
+            | NoInputOrEmpty str -> sprintf "%s: Must not be null or empty" str
+            | NotAnEmail str -> sprintf "'%s' must match the pattern '%s'" str ".+@.+"
+
+    type VerifiedEmail = Email of string
+    with
+        member x.Value =
+            match x with
+            | Email e -> e
+
 module CustomerInfo =
+    open EmailAddress
 
     type PersonalName = {
         FirstName:      string;
@@ -285,9 +302,6 @@ module CustomerInfo =
         Province: Province
     }
 
-    // Email
-    type Email = Email of string
-
     // Phone
     type CountryPrefix = CountryPrefix of int
     type Phone = { CountryPrefix:CountryPrefix; LocalNumber:string }
@@ -297,7 +311,7 @@ module CustomerInfo =
         BillingAddress: CanadaAddress
         ShippingAddress: CanadaAddress option
         IsShippingToBillingAddress: bool
-        Email: Email
+        Email: VerifiedEmail
         Phone: Phone option
     }
 
