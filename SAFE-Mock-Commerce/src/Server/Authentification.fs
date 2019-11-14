@@ -2,9 +2,11 @@ module JWT
 
 open System
 open System.IO
-open System.Security
+open System.Text
 open System.Security.Claims
 open System.IdentityModel.Tokens.Jwt
+
+open Microsoft.AspNetCore.Http
 
 open FsToolkit.ErrorHandling
 
@@ -55,3 +57,21 @@ let createSessionCredentials username password  =
                     let secureToken = generateToken verifiedEmail.Value
                     return { UserName = verifiedEmail; Password = pwd; Token = secureToken }
                 }
+
+let loginUserAsync (httpContext: HttpContext) = async {
+    use streamReader = new StreamReader(httpContext.Request.Body, Encoding.UTF8)
+    let requestBodyContent = streamReader.ReadToEnd()
+    if String.IsNullOrEmpty(requestBodyContent) then
+        return! failwithf "The request body is empty"
+    else
+        let credentialsSplit = requestBodyContent.Split(' ')
+        let userCredentialResult = createSessionCredentials credentialsSplit.[0] credentialsSplit.[1]
+        match userCredentialResult with
+        | Ok sessionCredentials ->
+            // Good we have the credentials for the user, we can follow the authentification process.
+            return sessionCredentials
+        | Error e ->
+            // Bad, something went wrong....
+            return failwithf "Couldn't authenticate the user because: %s" e.ErrorMessage
+}
+
