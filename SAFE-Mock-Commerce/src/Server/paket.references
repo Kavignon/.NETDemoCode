@@ -4,3 +4,4 @@ group Server
     Microsoft.ApplicationInsights.AspNetCore
     WindowsAzure.Storage
     Fable.Remoting.Giraffe
+    FsToolkit.ErrorHandling

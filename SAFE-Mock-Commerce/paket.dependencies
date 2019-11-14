@@ -1,3 +1,5 @@
+source https://www.nuget.org/api/v2
+
 group Server
     source https://api.nuget.org/v3/index.json
     framework: netcoreapp2.2
@@ -8,6 +10,7 @@ group Server
     nuget Fable.Remoting.Giraffe ~> 3
     nuget Microsoft.ApplicationInsights.AspNetCore ~> 2.2
     nuget WindowsAzure.Storage
+    nuget FsToolkit.ErrorHandling 1.2.5
 
 group Client
     source https://api.nuget.org/v3/index.json
@@ -23,6 +26,7 @@ group Client
     nuget Fable.Remoting.Client ~> 5
     nuget Fulma ~> 2
     nuget Fable.FontAwesome.Free ~> 2
+    nuget FsToolkit.ErrorHandling 1.2.5
 
 group Build
     source https://api.nuget.org/v3/index.json
@@ -38,4 +42,3 @@ group Build
     nuget Fake.Core.Trace
     nuget Fake.IO.Zip
     github CompositionalIT/fshelpers src/FsHelpers/ArmHelper/ArmHelper.fs
-
