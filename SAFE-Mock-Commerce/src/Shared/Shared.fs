@@ -4,13 +4,6 @@ open FSharp.Data
 
 type Counter = { Value : int }
 
-type ProductCatalogue = XmlProvider<"./StoreProducts.xml"> // TODO: Enhancement - Move the data to a SQL db in Azure and load data from there.
-
-type StoreProductDto =
-    | HeadphoneDto of ProductCatalogue.Headphone
-    | ReadingMaterialDto of ProductCatalogue.Book
-    | ComputerDto of ProductCatalogue.Computer
-
 type ProductDimension = {
     Height: float
     Width: float
@@ -224,18 +217,28 @@ with
         | Laptop (l, _) -> l.Details.Price
         | GameConsole (gc, _) -> gc.Hardware.Details.Price
 
+module CatalogueDto =
+    type ProductCatalogue = XmlProvider<"./StoreProducts.xml"> // TODO: Enhancement - Move the data to a SQL db in Azure and load data from there.
+
+    let productsFromDatabase = ProductCatalogue.GetSample()
+
+    type StoreProductDto =
+        | HeadphoneDto of ProductCatalogue.Headphone
+        | ReadingMaterialDto of ProductCatalogue.Book
+        | ComputerDto of ProductCatalogue.Computer
+        
 module ShoppingCart =
 
     type PaymentMethod =
         | Visa of cardOwnerName: string * cardNumber: string * expirationDate: DateTime * cardSecurityCode: int * wasCloned: bool
         | Debit of cardOwnerName: string * cardNumber: string * BankName: string * wasCloned: bool
 
-        member x.isCardValid =
+        member x.IsCardValid =
             match x with
             | Visa(_, _, exprDate, _, wasCloned) -> DateTime.Now < exprDate && not wasCloned
             | Debit(_, _, _, wasCloned) -> not wasCloned
 
-        member x.cardOwnerName =
+        member x.CardOwnerName =
             match x with
             | Visa (ownerName, _, _, _, _) -> ownerName
             | Debit (ownerName, _, _, _) -> ownerName
