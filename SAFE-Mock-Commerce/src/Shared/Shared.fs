@@ -4,6 +4,8 @@ open FSharp.Data
 
 type Counter = { Value : int }
 
+// Will be compiled to Js -> bundle.js
+
 type ProductDimension = {
     Height: float
     Width: float
@@ -223,7 +225,7 @@ module CatalogueDto =
         | HeadphoneDto of ProductCatalogue.Headphone
         | ReadingMaterialDto of ProductCatalogue.Book
         | ComputerDto of ProductCatalogue.Computer
-        
+
 module ShoppingCart =
 
     type PaymentMethod =
@@ -487,6 +489,6 @@ module Route =
     let builder typeName methodName =
         sprintf "/api/%s/%s" typeName methodName
 
-/// A type that specifies the communication protocol between client and server
-/// to learn more, read the docs at https://zaid-ajaj.github.io/Fable.Remoting/src/basics.html
-type ICounterApi = { initialCounter : unit -> Async<Counter> }
+type MockStoreWebApi = {
+    fetchProducts:   unit -> Async<StoreProduct list>
+}
