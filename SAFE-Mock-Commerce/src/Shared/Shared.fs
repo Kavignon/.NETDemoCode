@@ -249,9 +249,9 @@ module ShoppingCart =
     }
     with
 
-    member x.isCartEmpty = x.SelectedItems |> Option.toList |> List.isEmpty
+    member x.IsCartEmpty = x.SelectedItems |> Option.toList |> List.isEmpty
 
-    member x.getCartSubtotal =
+    member x.GetCartSubtotal =
         match x.SelectedItems with
         | None -> 0.00
         | Some storeProducts ->
@@ -259,7 +259,6 @@ module ShoppingCart =
             ||> Map.fold(fun accumulatedSubtotal product qty -> accumulatedSubtotal + (product.ProductPrice * float qty))
 
 module CustomerInfo =
-
     type PersonalName = {
         FirstName:      string;
         MiddleName:     string option

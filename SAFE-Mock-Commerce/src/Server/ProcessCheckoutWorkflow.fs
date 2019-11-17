@@ -16,7 +16,7 @@ type OrderSummary = {
     Taxes: decimal
 }
 with
-    member x.orderTotal =
+    member x.Total =
         let billTotal = x.StartingSubtotal + x.Taxes
         if  x.IsShippingFree then billTotal
         else
@@ -45,7 +45,7 @@ let getOrderTotalTaxes selectedProducts =
     )
 
 let processCartCheckout cart customerInfo =
-    if not cart.SelectedPaymentMethod.isCardValid  && customerInfo.ContactInfo.CustomerName.Fullname = cart.SelectedPaymentMethod.cardOwnerName then
+    if not cart.SelectedPaymentMethod.IsCardValid  && customerInfo.ContactInfo.CustomerName.Fullname = cart.SelectedPaymentMethod.CardOwnerName then
         printfn "Cannot proceed to checkout with invalid payment method."
     else
         match cart.SelectedItems with
@@ -53,7 +53,7 @@ let processCartCheckout cart customerInfo =
         | Some items ->
             let itemCount = getCartItemTotal items
             let totalTaxes = getOrderTotalTaxes items
-            let subTotal = cart.getCartSubtotal
+            let subTotal = cart.GetCartSubtotal
             let orderSummary = {
                 ItemsOrdered = itemCount
                 StartingSubtotal = decimal subTotal
@@ -63,4 +63,4 @@ let processCartCheckout cart customerInfo =
             }
 
             printfn "Order summary: %A" orderSummary
-            printfn "Order Total %M" orderSummary.orderTotal
+            printfn "Order Total %M" orderSummary.Total
