@@ -2,6 +2,7 @@ module DtoToDomainMapper
 
 open System
 open Shared
+open Shared.CatalogueDto
 
 let (|Prefix|_|) (p:string) (s:string) =
     if s.StartsWith(p) then
