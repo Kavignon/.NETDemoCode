@@ -8,9 +8,9 @@
     <None Include="style.scss" />
     <Compile Include="../Shared/Shared.fs" />
     <Compile Include="Version.fs" />
-    <Compile Include="Client.fs" />
     <Compile Include="Pages.fs" />
     <Compile Include="LandingPage.fs" />
+    <Compile Include="Client.fs" />
   </ItemGroup>
   <ItemGroup>
     <PackageReference Include="FSharp.Data" Version="3.3.2" />
