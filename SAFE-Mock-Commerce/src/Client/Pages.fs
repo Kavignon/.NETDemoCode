@@ -1,11 +1,11 @@
-module Client.Pages
+module Pages
 
 open Elmish.UrlParser
 
 /// The different pages of the application. If you add a new page, then add an entry here.
 [<RequireQualifiedAccess>]
 type Page =
-    | Home
+    | LandingPage
     | Login
     | Checkout
     | NotFound
@@ -16,7 +16,7 @@ type Page =
 
 let toPath =
     function
-    | Page.Home -> "/"
+    | Page.LandingPage -> "/"
     | Page.Login -> "/login"
     | Page.Checkout -> "/checkout"
     | Page.NotFound -> "/notfound"
@@ -28,7 +28,7 @@ let toPath =
 /// The URL is turned into a Result.
 let pageParser : Parser<Page -> Page,_> =
     oneOf
-        [ map Page.Home (s "")
+        [ map Page.LandingPage (s "")
           map Page.Login (s "login")
           map Page.NotFound (s "notfound")
           map Page.Checkout (s "checkout")
