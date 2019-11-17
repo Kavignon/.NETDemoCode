@@ -10,6 +10,8 @@
     <Compile Include="Version.fs" />
     <Compile Include="Client.fs" />
     <Compile Include="Pages.fs" />
+  <ItemGroup>
+    <PackageReference Include="FSharp.Data" Version="3.3.2" />
   </ItemGroup>
   <Import Project="..\..\.paket\Paket.Restore.targets" />
 </Project>
