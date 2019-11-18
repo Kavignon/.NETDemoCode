@@ -39,8 +39,6 @@ let getOrderTotalTaxes selectedProducts =
         | Book (b, _) -> accTaxes + (baseTaxes * decimal b.Details.Price * decimalCount)
         | WirelessHeadphones (wh, _) ->
             accTaxes + (baseTaxes * decimal wh.Details.Price * decimalCount) + (environmentalTaxes * decimal wh.Details.Price * decimalCount)
-        | Television (t, _) ->
-            accTaxes + (baseTaxes * decimal t.ProductDetails.Price * decimalCount) + (environmentalTaxes * decimal t.ProductDetails.Price * decimalCount)
         | _ -> accTaxes
     )
 

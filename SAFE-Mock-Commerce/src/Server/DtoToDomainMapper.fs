@@ -58,12 +58,6 @@ let makeProductInformationFrom productDto =
                 Width = float h.Width.Value
                 Depth = Some (float h.Depth.Value)
             }
-        | ComputerDto c ->
-            {
-                Height = float c.Height.Value
-                Width = float c.Width.Value
-                Depth = Some (float c.Depth.Value)
-            }
         | ReadingMaterialDto rm ->
             {
                 Height = float rm.Height.Value
@@ -93,17 +87,6 @@ let makeProductInformationFrom productDto =
             Price = float readingDto.Price.Value
             Color = Red // Provide book color in definition
             Brand = Toshiba //Waiting for up book publisher companies in definition
-        }
-    | ComputerDto computerDto ->
-        {
-            Name = computerDto.Model.Series + " " + computerDto.Model.Number
-            Weight = float computerDto.Weight.Value
-            ShippingWeight = float computerDto.Weight.Value
-            AverageReviews = float computerDto.ReviewAverage.Value
-            Dimensions = productDimensions
-            Price = float computerDto.Price.Value
-            Color = convertToProductColor computerDto.Color.Value
-            Brand = convertToBrand computerDto.Manufacturer
         }
 
 let convertToWirelessHeadphones productCommonInfo headphoneDetails =
