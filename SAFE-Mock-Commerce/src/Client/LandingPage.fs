@@ -1,9 +1,17 @@
 module LandingPage
 
+open System
+
 open Elmish
+open Fable.React
+open Fable.React.Props
+open Fable.Remoting.Client
 open Shared
-open Shared.CatalogueDto
-open Shared.DtoToDomain
+
+let remoteWebStoreApi =
+  Remoting.createApi()
+  |> Remoting.withRouteBuilder Route.builder
+  |> Remoting.buildProxy<MockStoreWebApi>
 
 type Model = {
     Products : list<StoreProduct>
@@ -21,8 +29,7 @@ let init () = Model.Empty, Cmd.ofMsg LoadStoreProducts
 let update (msg:Msg) model : Model*Cmd<Msg> =
     match msg with
     | LoadStoreProducts ->
-        let storeProducts = productsFromDatabase |> hydrateProductSeq |> Seq.toList
-        model, Cmd.ofMsg (StoreProductsLoaded storeProducts)
+        model, Cmd.OfAsync.perform remoteWebStoreApi.fetchProducts () StoreProductsLoaded
 
     | StoreProductsLoaded products ->
         { model with Products = products }, Cmd.none
@@ -33,40 +40,57 @@ let update (msg:Msg) model : Model*Cmd<Msg> =
 
 type ProductProps = { Key: string; Product: StoreProduct }
 
-let productComponent = elmishView "Book" (fun (props: BookProps) ->
-    let book = props.Book
-    tr [ Key props.Key ] [
-        td [] [
-            if String.IsNullOrWhiteSpace book.Link then
-                yield str book.Title
-            else
-                yield a [ Href book.Link; Target "_blank" ] [str book.Title ] ]
-        td [] [ str book.Authors ]
-        td [] [ img [ Src book.ImageLink; Title book.Title ]]
-    ]
-)
+let inline elmishView name render = FunctionComponent.Of(render, name, equalsButFunctions)
 
-let view = elmishView "Home" (fun (model:Model) ->
-    match model.WishList with
-    | Some wishList ->
-        table [Key "Books"; ClassName "table table-striped table-hover"] [
+let renderBook (bookElem: Book) =
+    tr [] []
+
+let renderHeadphone (headphoneElem: HeadphoneProduct) =
+    tr [] []
+
+let renderTelevision (televisionElem: Device) =
+    tr [] []
+
+let renderComputer (computerElem: Computer) =
+    tr [] []
+
+let renderConsole (consoleElem: GameConsole) =
+    tr [] []
+
+let renderProductElement props =
+    match props.Product with
+    | Book (book, _) -> renderBook book
+    | WirelessHeadphones (headphones, _) -> renderHeadphone headphones
+    | Television (television, _) -> renderTelevision television
+    | Laptop (computer, _) -> renderComputer computer
+    | GameConsole (console, _) -> renderConsole console
+
+let productComponent = elmishView "Product" renderProductElement
+
+let viewModel model =
+    match model.Products with
+    | products when products.Length > 0 ->
+        table [Key "Products"; ClassName "table table-striped table-hover"] [
             thead [] [
                 tr [] [
-                    th [] [str "Title"]
-                    th [] [str "Authors"]
                     th [] [str "Image"]
+                    th [] [str "Title"]
+                    th [] [str "Review Average"]
+                    th [] [str "Category"]
+                    th [] [str "Price"]
                 ]
             ]
             tbody [] [
-                wishList.Books
-                    |> List.map (fun book ->
-                        elmishView "Book" bookComponent {
-                            Key = book.Title + book.Authors
-                            Book = book
-                        })
-                    |> ofList
+                products
+                |> List.map (fun product ->
+                    elmishView "Book" productComponent {
+                        Key = product.ProductId
+                        Product = product
+                    })
+                |> ofList
             ]
         ]
     | _ ->
         div [] []
-)
+
+let viewProductComponent = elmishView "Home" viewModel
