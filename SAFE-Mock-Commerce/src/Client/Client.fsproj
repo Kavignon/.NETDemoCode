@@ -7,9 +7,11 @@
     <None Include="paket.references" />
     <None Include="style.scss" />
     <Compile Include="../Shared/Shared.fs" />
+    <Compile Include="Components/ComponentUtils.fs" />
+    <Compile Include="Components/ProductComponent.fs" />
     <Compile Include="Version.fs" />
     <Compile Include="Pages.fs" />
-    <Compile Include="LandingPage.fs" />
+    <Compile Include="Pages/LandingPage.fs" />
     <Compile Include="Client.fs" />
   </ItemGroup>
   <ItemGroup>
