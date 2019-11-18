@@ -1,5 +1,11 @@
 module ProductComponent
 
+open Fable.React
+open Fable.React.Props
+
+open Shared
+open ComponentUtils
+
 type ProductProps = { Key: string; Product: StoreProduct }
 
 let renderBook (bookElem: Book) =
@@ -15,9 +21,10 @@ let renderProductElement props =
 
 let productComponent = elmishView "Product" renderProductElement
 
-let viewProduct model =
-    match model.Products with
-    | products when products.Length > 0 ->
+let viewProduct (products: StoreProduct list) =
+    if products.Length = 0 then
+        div [] []
+    else
         table [Key "Products"; ClassName "table table-striped table-hover"] [
             thead [] [
                 tr [] [
@@ -38,5 +45,3 @@ let viewProduct model =
                 |> ofList
             ]
         ]
-    | _ ->
-        div [] []
