@@ -4,11 +4,22 @@ open Elmish
 open Elmish.React
 open Feliz
 open Fable.Remoting.Client
-open Fulma
 
 open Shared
 open BackendInteractions
 open Pages
+
+module Cmd =
+  let fromAsync (operation: Async<'msg>) : Cmd<'msg> =
+    let delayedCmd (dispatch: 'msg -> unit) : unit =
+      let delayedDispatch = async {
+          let! msg = operation
+          dispatch msg
+      }
+
+      Async.StartImmediate delayedDispatch
+
+    Cmd.ofSub delayedCmd
 
 type Model = {
     Products: DelayedResult<Result<StoreProduct list, string>>
@@ -17,21 +28,80 @@ type Model = {
 type EventMessage =
     | FetchProducts of AsyncTransaction<Result<StoreProduct list, string>>
 
+let init() = { Products = OperationNotStarted }, Cmd.ofMsg (FetchProducts Begin)
+
 let remoteWebStoreApi =
   Remoting.createApi()
   |> Remoting.withRouteBuilder Route.builder
   |> Remoting.buildProxy<MockStoreWebApi>
 
-// defines the initial state and initial command (= side-effect) of the application
-let init () =
-    let initialModel = { Products = OperationNotStarted }
-    initialModel, Cmd.ofMsg (FetchProducts Begin)
+let loadStoreProducts = async {
+    do! Async.Sleep 500
+    let! products = remoteWebStoreApi.fetchProducts()
+    if products.Length = 0 then
+        return FetchProducts (Completed (Error "No products were loaded from the catalogue"))
+    else
+        return FetchProducts (Completed (Ok products))
+}
+
+let update (msg : EventMessage) (currentModel : Model) : Model * Cmd<EventMessage> =
+    match msg with
+    | FetchProducts Begin ->
+      let nextState = { currentModel with Products = OperationInProgress }
+      let nextCmd = Cmd.fromAsync loadStoreProducts
+      nextState, nextCmd
+
+    | FetchProducts (Completed products) ->
+      let nextState = { currentModel with Products = ResultFromServer products }
+      nextState, Cmd.none
 
 let renderError (errorMsg: string) =
   Html.h1 [
     prop.style [ style.color.red ]
     prop.text errorMsg
   ]
+
+let div (classes: string list) (children: ReactElement list) =
+  Html.div [
+    prop.className classes
+    prop.children children
+  ]
+
+let renderItem (product: StoreProduct) =
+  Html.div [
+    prop.className "box"
+    prop.style [
+      style.marginTop 15
+      style.marginBottom 15
+    ]
+    prop.children [
+      div [ "columns"; "is-mobile" ] [
+        div [ "column"; "is-narrow" ] [
+          Html.div [
+            prop.className [ "icon" ]
+            prop.style [ style.marginLeft 20 ]
+            prop.children [
+              Html.i [prop.className "fa fa-poll fa-2x"]
+              Html.span [
+                prop.style [ style.marginLeft 10; style.marginRight 10 ]
+                prop.text product.ReviewAverage
+              ]
+            ]
+          ]
+        ]
+
+        div [ "column" ] [
+          Html.a [
+            prop.style [ style.textDecoration.underline ]
+            prop.custom("target", "_blank")
+            prop.text product.Name
+          ]
+        ]
+      ]
+    ]
+  ]
+
+let renderItems (items: StoreProduct list) =  Html.fragment [ for item in items -> renderItem item ]
 
 let spinner =
   Html.div [
@@ -43,6 +113,13 @@ let spinner =
     ]
   ]
 
+let renderStoreCatalogue = function
+  | OperationNotStarted -> Html.none
+  | OperationInProgress -> spinner
+  | ResultFromServer (Error errorMsg) -> renderError errorMsg
+  | ResultFromServer (Ok items) -> renderItems items
+
+
 let render (state: Model) (dispatch: EventMessage -> unit) =
   Html.div [
     prop.style [ style.padding 20 ]
@@ -51,19 +128,10 @@ let render (state: Model) (dispatch: EventMessage -> unit) =
         prop.className "title"
         prop.text "Mock E-Commerce"
       ]
+
+      renderStoreCatalogue state.Products
     ]
   ]
-
-// The update function computes the next state of the application based on the current state and the incoming events/messages
-// It can also run side-effects (encoded as commands) like calling the server via Http.
-// these commands in turn, can dispatch messages to which the update function will react.
-let update (msg : EventMessage) (currentModel : Model) : Model * Cmd<EventMessage> =
-    match msg with
-      | FetchProducts Begin ->
-          let startingFetch = { currentModel with Products = OperationInProgress }
-          let nextCmd = Cmd.fromAsync (loadStoryItems state.CurrentStories)
-          startingFetch, nextCmd
-
 
 #if DEBUG
 open Elmish.Debug
