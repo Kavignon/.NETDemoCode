@@ -1,5 +1,9 @@
 module BackendInteractions
 
+open Elmish
+open Fable.Remoting.Client
+open Shared
+
 type DelayedResult<'t> =
     | OperationNotStarted
     | OperationInProgress
