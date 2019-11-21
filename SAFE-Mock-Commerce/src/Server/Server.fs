@@ -12,6 +12,9 @@ open Fable.Remoting.Server
 open Fable.Remoting.Giraffe
 open Microsoft.WindowsAzure.Storage
 
+open CatalogueDto
+open CatalogApiWorkflows
+
 let tryGetEnv = System.Environment.GetEnvironmentVariable >> function null | "" -> None | x -> Some x
 
 let publicPath = tryGetEnv "public_path" |> Option.defaultValue "../Client/public" |> Path.GetFullPath
@@ -21,14 +24,15 @@ let port =
     "SERVER_PORT"
     |> tryGetEnv |> Option.map uint16 |> Option.defaultValue 8085us
 
-let counterApi = {
-    initialCounter = fun () -> async { return { Value = 42 } }
-}
+let webApi =
+    {
+        fetchProducts = fun () -> async { return hydrateProductSeq productsFromDatabase }
+    }
 
 let webApp =
     Remoting.createApi()
     |> Remoting.withRouteBuilder Route.builder
-    |> Remoting.fromValue counterApi
+    |> Remoting.fromValue webApi
     |> Remoting.buildHttpHandler
 
 let configureAzure (services:IServiceCollection) =

@@ -2,122 +2,143 @@ module Client
 
 open Elmish
 open Elmish.React
-open Fable.React
-open Fable.React.Props
-open Fulma
-open Thoth.Json
+open Feliz
+open Fable.Remoting.Client
 
 open Shared
+open BackendInteractions
+open Pages
 
-// The model holds data that you want to keep track of while the application is running
-// in this case, we are keeping track of a counter
-// we mark it as optional, because initially it will not be available from the client
-// the initial value will be requested from server
-type Model = { Counter: Counter option }
+module Cmd =
+  let fromAsync (operation: Async<'msg>) : Cmd<'msg> =
+    let delayedCmd (dispatch: 'msg -> unit) : unit =
+      let delayedDispatch = async {
+          let! msg = operation
+          dispatch msg
+      }
 
-// The Msg type defines what events/actions can occur while the application is running
-// the state of the application changes *only* in reaction to these events
-type Msg =
-    | Increment
-    | Decrement
-    | InitialCountLoaded of Counter
+      Async.StartImmediate delayedDispatch
 
-module Server =
+    Cmd.ofSub delayedCmd
 
-    open Shared
-    open Fable.Remoting.Client
+type Model = {
+    Products: DelayedResult<Result<StoreProduct list, string>>
+}
 
-    /// A proxy you can use to talk to server directly
-    let api : ICounterApi =
-      Remoting.createApi()
-      |> Remoting.withRouteBuilder Route.builder
-      |> Remoting.buildProxy<ICounterApi>
-let initialCounter = Server.api.initialCounter
+type EventMessage =
+    | FetchProducts of AsyncTransaction<Result<StoreProduct list, string>>
 
-// defines the initial state and initial command (= side-effect) of the application
-let init () : Model * Cmd<Msg> =
-    let initialModel = { Counter = None }
-    let loadCountCmd =
-        Cmd.OfAsync.perform initialCounter () InitialCountLoaded
-    initialModel, loadCountCmd
+let init() = { Products = OperationNotStarted }, Cmd.ofMsg (FetchProducts Begin)
 
-// The update function computes the next state of the application based on the current state and the incoming events/messages
-// It can also run side-effects (encoded as commands) like calling the server via Http.
-// these commands in turn, can dispatch messages to which the update function will react.
-let update (msg : Msg) (currentModel : Model) : Model * Cmd<Msg> =
-    match currentModel.Counter, msg with
-    | Some counter, Increment ->
-        let nextModel = { currentModel with Counter = Some { Value = counter.Value + 1 } }
-        nextModel, Cmd.none
-    | Some counter, Decrement ->
-        let nextModel = { currentModel with Counter = Some { Value = counter.Value - 1 } }
-        nextModel, Cmd.none
-    | _, InitialCountLoaded initialCount->
-        let nextModel = { Counter = Some initialCount }
-        nextModel, Cmd.none
-    | _ -> currentModel, Cmd.none
+let remoteWebStoreApi =
+  Remoting.createApi()
+  |> Remoting.withRouteBuilder Route.builder
+  |> Remoting.buildProxy<MockStoreWebApi>
+
+let loadStoreProducts = async {
+    do! Async.Sleep 500
+    let! products = remoteWebStoreApi.fetchProducts()
+    if products.Length = 0 then
+        return FetchProducts (Completed (Error "No products were loaded from the catalogue"))
+    else
+        return FetchProducts (Completed (Ok products))
+}
+
+let update (msg : EventMessage) (currentModel : Model) : Model * Cmd<EventMessage> =
+    match msg with
+    | FetchProducts Begin ->
+      let nextState = { currentModel with Products = OperationInProgress }
+      let nextCmd = Cmd.fromAsync loadStoreProducts
+      nextState, nextCmd
+
+    | FetchProducts (Completed products) ->
+      let nextState = { currentModel with Products = ResultFromServer products }
+      nextState, Cmd.none
+
+let renderError (errorMsg: string) =
+  Html.h1 [
+    prop.style [ style.color.red ]
+    prop.text errorMsg
+  ]
+
+let div (classes: string list) (children: ReactElement list) =
+  Html.div [
+    prop.className classes
+    prop.children children
+  ]
+
+let renderItem (product: StoreProduct) =
+  Html.div [
+    prop.className "box"
+    prop.style [
+      style.marginTop 15
+      style.marginBottom 15
+    ]
+    prop.children [
+      div [ "columns"; "is-mobile" ] [
+        div [ "column"; "is-narrow" ] [
+          Html.div [
+            prop.className [ "icon" ]
+            prop.style [ style.marginLeft 20 ]
+            prop.children [
+              Html.i [prop.className "fa fa-poll fa-2x"]
+              Html.span [
+                prop.style [ style.marginLeft 10; style.marginRight 10 ]
+                prop.text product.ReviewAverage
+              ]
+            ]
+          ]
+        ]
+
+        div [ "column" ] [
+          Html.a [
+            prop.style [ style.textDecoration.underline ]
+            prop.custom("target", "_blank")
+            prop.text product.Name
+          ]
+        ]
+      ]
+    ]
+  ]
+
+let renderItems (items: StoreProduct list) =  Html.fragment [ for item in items -> renderItem item ]
+
+let spinner =
+  Html.div [
+    prop.style [ style.textAlign.center; style.marginTop 20 ]
+    prop.children [
+      Html.i [
+        prop.className "fa fa-cog fa-spin fa-2x"
+      ]
+    ]
+  ]
+
+let renderStoreCatalogue = function
+  | OperationNotStarted -> Html.none
+  | OperationInProgress -> spinner
+  | ResultFromServer (Error errorMsg) -> renderError errorMsg
+  | ResultFromServer (Ok items) -> renderItems items
 
 
-let safeComponents =
-    let components =
-        span [ ]
-           [ a [ Href "https://github.com/SAFE-Stack/SAFE-template" ]
-               [ str "SAFE  "
-                 str Version.template ]
-             str ", "
-             a [ Href "https://saturnframework.github.io" ] [ str "Saturn" ]
-             str ", "
-             a [ Href "http://fable.io" ] [ str "Fable" ]
-             str ", "
-             a [ Href "https://elmish.github.io" ] [ str "Elmish" ]
-             str ", "
-             a [ Href "https://fulma.github.io/Fulma" ] [ str "Fulma" ]
-             str ", "
-             a [ Href "https://zaid-ajaj.github.io/Fable.Remoting/" ] [ str "Fable.Remoting" ]
+let render (state: Model) (dispatch: EventMessage -> unit) =
+  Html.div [
+    prop.style [ style.padding 20 ]
+    prop.children [
+      Html.h1 [
+        prop.className "title"
+        prop.text "Mock E-Commerce"
+      ]
 
-           ]
-
-    span [ ]
-        [ str "Version "
-          strong [ ] [ str Version.app ]
-          str " powered by: "
-          components ]
-
-let show = function
-    | { Counter = Some counter } -> string counter.Value
-    | { Counter = None   } -> "Loading..."
-
-let button txt onClick =
-    Button.button
-        [ Button.IsFullWidth
-          Button.Color IsPrimary
-          Button.OnClick onClick ]
-        [ str txt ]
-
-let view (model : Model) (dispatch : Msg -> unit) =
-    div []
-        [ Navbar.navbar [ Navbar.Color IsPrimary ]
-            [ Navbar.Item.div [ ]
-                [ Heading.h2 [ ]
-                    [ str "SAFE Template" ] ] ]
-
-          Container.container []
-              [ Content.content [ Content.Modifiers [ Modifier.TextAlignment (Screen.All, TextAlignment.Centered) ] ]
-                    [ Heading.h3 [] [ str ("Press buttons to manipulate counter: " + show model) ] ]
-                Columns.columns []
-                    [ Column.column [] [ button "-" (fun _ -> dispatch Decrement) ]
-                      Column.column [] [ button "+" (fun _ -> dispatch Increment) ] ] ]
-
-          Footer.footer [ ]
-                [ Content.content [ Content.Modifiers [ Modifier.TextAlignment (Screen.All, TextAlignment.Centered) ] ]
-                    [ safeComponents ] ] ]
+      renderStoreCatalogue state.Products
+    ]
+  ]
 
 #if DEBUG
 open Elmish.Debug
 open Elmish.HMR
 #endif
 
-Program.mkProgram init update view
+Program.mkProgram init update render
 #if DEBUG
 |> Program.withConsoleTrace
 #endif

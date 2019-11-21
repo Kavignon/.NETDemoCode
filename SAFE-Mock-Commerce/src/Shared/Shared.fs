@@ -4,12 +4,7 @@ open FSharp.Data
 
 type Counter = { Value : int }
 
-type ProductCatalogue = XmlProvider<"./StoreProducts.xml"> // TODO: Enhancement - Move the data to a SQL db in Azure and load data from there.
-
-type StoreProductDto =
-    | HeadphoneDto of ProductCatalogue.Headphone
-    | ReadingMaterialDto of ProductCatalogue.Book
-    | ComputerDto of ProductCatalogue.Computer
+// Will be compiled to Js -> bundle.js
 
 type ProductDimension = {
     Height: float
@@ -198,31 +193,29 @@ type HeadphoneProduct = {
     IsNoiseCancelActive:    bool
 }
 
-// override equality and deny comparison
-// // [<CustomEquality; CustomComparison>]
-
 type StoreProduct =
     | Book                  of novel:       Book * SkuId: string
     | WirelessHeadphones    of headphones:  HeadphoneProduct * SkuId: string
-    | Television            of television:  Device * SkuId: string
-    | Laptop                of laptop:      Computer * SkuId: string
-    | GameConsole           of console:     GameConsole * SkuId: string
 with
-    member x.ProductId =
+    member x.Id =
         match x with
         | Book (_, id) -> id
         | WirelessHeadphones (_, id) -> id
-        | Television (_,id) -> id
-        | Laptop (_, id) -> id
-        | GameConsole (_, id) -> id
 
-    member x.ProductPrice =
+    member x.Price =
         match x with
         | Book (b, _) -> b.Details.Price
         | WirelessHeadphones (wh, _) -> wh.Details.Price
-        | Television (t, _) -> t.ProductDetails.Price
-        | Laptop (l, _) -> l.Details.Price
-        | GameConsole (gc, _) -> gc.Hardware.Details.Price
+
+    member x.Name =
+        match x with
+        | Book(b, _) -> b.Details.Name
+        | WirelessHeadphones (wh, _) -> wh.Details.Name
+
+    member x.ReviewAverage =
+        match x with
+        | Book(b, _) -> b.Details.AverageReviews
+        | WirelessHeadphones (wh, _) -> wh.Details.AverageReviews
 
 module ShoppingCart =
 
@@ -230,12 +223,12 @@ module ShoppingCart =
         | Visa of cardOwnerName: string * cardNumber: string * expirationDate: DateTime * cardSecurityCode: int * wasCloned: bool
         | Debit of cardOwnerName: string * cardNumber: string * BankName: string * wasCloned: bool
 
-        member x.isCardValid =
+        member x.IsCardValid =
             match x with
             | Visa(_, _, exprDate, _, wasCloned) -> DateTime.Now < exprDate && not wasCloned
             | Debit(_, _, _, wasCloned) -> not wasCloned
 
-        member x.cardOwnerName =
+        member x.CardOwnerName =
             match x with
             | Visa (ownerName, _, _, _, _) -> ownerName
             | Debit (ownerName, _, _, _) -> ownerName
@@ -246,17 +239,16 @@ module ShoppingCart =
     }
     with
 
-    member x.isCartEmpty = x.SelectedItems |> Option.toList |> List.isEmpty
+    member x.IsCartEmpty = x.SelectedItems |> Option.toList |> List.isEmpty
 
-    member x.getCartSubtotal =
+    member x.GetCartSubtotal =
         match x.SelectedItems with
         | None -> 0.00
         | Some storeProducts ->
             (0.00, storeProducts)
-            ||> Map.fold(fun accumulatedSubtotal product qty -> accumulatedSubtotal + (product.ProductPrice * float qty))
+            ||> Map.fold(fun accumulatedSubtotal product qty -> accumulatedSubtotal + (product.Price * float qty))
 
 module CustomerInfo =
-
     type PersonalName = {
         FirstName:      string;
         MiddleName:     string option
@@ -286,9 +278,8 @@ module CustomerInfo =
     }
 
     // Email
-    type Email = Email of string
+    type Email = UnverifiedEmail of string
 
-    // Phone
     type CountryPrefix = CountryPrefix of int
     type Phone = { CountryPrefix:CountryPrefix; LocalNumber:string }
 
@@ -324,6 +315,6 @@ module Route =
     let builder typeName methodName =
         sprintf "/api/%s/%s" typeName methodName
 
-/// A type that specifies the communication protocol between client and server
-/// to learn more, read the docs at https://zaid-ajaj.github.io/Fable.Remoting/src/basics.html
-type ICounterApi = { initialCounter : unit -> Async<Counter> }
+type MockStoreWebApi = {
+    fetchProducts:   unit -> Async<StoreProduct list>
+}
