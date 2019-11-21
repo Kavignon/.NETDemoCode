@@ -1,5 +1,6 @@
 source https://www.nuget.org/api/v2
 
+nuget Feliz 0.68.2
 nuget FSharp.Data 3.3.2
 group Server
     source https://api.nuget.org/v3/index.json
