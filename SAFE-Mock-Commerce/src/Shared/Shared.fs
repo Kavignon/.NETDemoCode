@@ -197,15 +197,25 @@ type StoreProduct =
     | Book                  of novel:       Book * SkuId: string
     | WirelessHeadphones    of headphones:  HeadphoneProduct * SkuId: string
 with
-    member x.ProductId =
+    member x.Id =
         match x with
         | Book (_, id) -> id
         | WirelessHeadphones (_, id) -> id
 
-    member x.ProductPrice =
+    member x.Price =
         match x with
         | Book (b, _) -> b.Details.Price
         | WirelessHeadphones (wh, _) -> wh.Details.Price
+
+    member x.Name =
+        match x with
+        | Book(b, _) -> b.Details.Name
+        | WirelessHeadphones (wh, _) -> wh.Details.Name
+
+    member x.ReviewAverage =
+        match x with
+        | Book(b, _) -> b.Details.AverageReviews
+        | WirelessHeadphones (wh, _) -> wh.Details.AverageReviews
 
 module ShoppingCart =
 
@@ -236,7 +246,7 @@ module ShoppingCart =
         | None -> 0.00
         | Some storeProducts ->
             (0.00, storeProducts)
-            ||> Map.fold(fun accumulatedSubtotal product qty -> accumulatedSubtotal + (product.ProductPrice * float qty))
+            ||> Map.fold(fun accumulatedSubtotal product qty -> accumulatedSubtotal + (product.Price * float qty))
 
 module CustomerInfo =
     type PersonalName = {
