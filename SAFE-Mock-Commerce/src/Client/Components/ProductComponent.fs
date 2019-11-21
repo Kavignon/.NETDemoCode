@@ -39,7 +39,7 @@ let viewProduct (products: StoreProduct list) =
                 products
                 |> List.map (fun product ->
                     elmishView "Book" productComponent {
-                        Key = product.ProductId
+                        Key = product.Id
                         Product = product
                     })
                 |> ofList
