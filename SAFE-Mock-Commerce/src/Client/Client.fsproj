@@ -17,6 +17,7 @@
   </ItemGroup>
   <ItemGroup>
     <PackageReference Include="Feliz" Version="0.68.2" />
+    <PackageReference Include="Feliz.Router" Version="1.7.0" />
     <PackageReference Include="FSharp.Data" Version="3.3.2" />
   </ItemGroup>
   <Import Project="..\..\.paket\Paket.Restore.targets" />
