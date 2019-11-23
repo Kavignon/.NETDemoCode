@@ -3,11 +3,12 @@ module Client
 open Elmish
 open Elmish.React
 open Feliz
+open Feliz.Router
 open Fable.Remoting.Client
 
 open Shared
 open BackendInteractions
-open Pages
+open BackendInteractions.Cmd
 
 module Cmd =
   let fromAsync (operation: Async<'msg>) : Cmd<'msg> =
