@@ -10,34 +10,30 @@ open Shared
 open BackendInteractions
 open BackendInteractions.Cmd
 
-module Cmd =
-  let fromAsync (operation: Async<'msg>) : Cmd<'msg> =
-    let delayedCmd (dispatch: 'msg -> unit) : unit =
-      let delayedDispatch = async {
-          let! msg = operation
-          dispatch msg
-      }
+module ApplicationModel =
+    type AppPage =
+        | LandingPage of DelayedResult<Result<StoreProduct list, string>>
+        | ProductDetails of StoreProduct
+        | NotFound
 
-      Async.StartImmediate delayedDispatch
+    type Model = {
+         CurrentPage : AppPage
+         CurrentUrl  : string list
+     }
 
-    Cmd.ofSub delayedCmd
+    type EventMessage =
+        | FetchProducts of AsyncTransaction<Result<StoreProduct list, string>>
+        | UrlChanged of string list
 
-type Model = {
-    Products: DelayedResult<Result<StoreProduct list, string>>
-}
+    let init() =
+        let initialModel = { CurrentUrl = [ ]; CurrentPage = LandingPage OperationNotStarted }
+        let initialEventMsg = Cmd.ofMsg (FetchProducts Begin)
+        initialModel, initialEventMsg
 
-type EventMessage =
-    | FetchProducts of AsyncTransaction<Result<StoreProduct list, string>>
-
-let init() = { Products = OperationNotStarted }, Cmd.ofMsg (FetchProducts Begin)
-
-let remoteWebStoreApi =
-  Remoting.createApi()
-  |> Remoting.withRouteBuilder Route.builder
-  |> Remoting.buildProxy<MockStoreWebApi>
+open ApplicationModel
 
 let loadStoreProducts = async {
-    do! Async.Sleep 500
+    do! Async.Sleep 1000
     let! products = remoteWebStoreApi.fetchProducts()
     if products.Length = 0 then
         return FetchProducts (Completed (Error "No products were loaded from the catalogue"))
