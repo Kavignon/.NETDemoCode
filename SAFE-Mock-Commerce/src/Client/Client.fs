@@ -44,96 +44,124 @@ let loadStoreProducts = async {
 let update (msg : EventMessage) (currentModel : Model) : Model * Cmd<EventMessage> =
     match msg with
     | FetchProducts Begin ->
-      let nextState = { currentModel with Products = OperationInProgress }
-      let nextCmd = Cmd.fromAsync loadStoreProducts
+      let nextState = { currentModel with CurrentPage = LandingPage OperationInProgress }
+      let nextCmd = fromAsync loadStoreProducts
       nextState, nextCmd
 
     | FetchProducts (Completed products) ->
-      let nextState = { currentModel with Products = ResultFromServer products }
+      let nextState = { currentModel with CurrentPage = LandingPage (ResultFromServer products) }
       nextState, Cmd.none
 
-let renderError (errorMsg: string) =
-  Html.h1 [
-    prop.style [ style.color.red ]
-    prop.text errorMsg
-  ]
+    | UrlChanged urlSegments ->
+        let nextState = { currentModel with CurrentUrl = urlSegments }
+        nextState, Cmd.none
 
-let div (classes: string list) (children: ReactElement list) =
-  Html.div [
-    prop.className classes
-    prop.children children
-  ]
+module ApplicationView =
+    let div (classes: string list) (children: ReactElement list) =
+      Html.div [
+        prop.className classes
+        prop.children children
+      ]
 
-let renderItem (product: StoreProduct) =
-  Html.div [
-    prop.className "box"
-    prop.style [
-      style.marginTop 15
-      style.marginBottom 15
-    ]
-    prop.children [
-      div [ "columns"; "is-mobile" ] [
-        div [ "column"; "is-narrow" ] [
-          Html.div [
-            prop.className [ "icon" ]
-            prop.style [ style.marginLeft 20 ]
-            prop.children [
-              Html.i [prop.className "fa fa-poll fa-2x"]
-              Html.span [
-                prop.style [ style.marginLeft 10; style.marginRight 10 ]
-                prop.text product.ReviewAverage
+    let storeItemSummaryView (product: StoreProduct) =
+        Html.div [
+        prop.className "box"
+        prop.style [
+          style.marginTop 15
+          style.marginBottom 15
+        ]
+        prop.children [
+          div [ "columns"; "is-mobile" ] [
+            div [ "column"; "is-narrow" ] [
+              Html.div [
+                prop.className [ "icon" ]
+                prop.style [ style.marginLeft 20 ]
+                prop.children [
+                  Html.i [prop.className "fa fa-poll fa-2x"]
+                  Html.span [
+                    prop.style [ style.marginLeft 10; style.marginRight 10 ]
+                    prop.text product.ReviewAverage
+                  ]
+                ]
+              ]
+            ]
+
+            div [ "column" ] [
+              Html.a [
+                prop.style [ style.textDecoration.underline ]
+                prop.custom("target", "_blank")
+                prop.text product.Name
               ]
             ]
           ]
         ]
+      ]
 
-        div [ "column" ] [
-          Html.a [
-            prop.style [ style.textDecoration.underline ]
-            prop.custom("target", "_blank")
-            prop.text product.Name
+module ApplicationRendering =
+    open ApplicationView
+
+    let render state dispatch =
+        let currentPage =
+            match state.CurrentUrl with
+            | [ ] -> Html.h1 "Home"
+            | [ "users" ] -> Html.h1 "Users page"
+            | [ "users"; Route.Int userId ] -> Html.h1 (sprintf "User ID %d" userId)
+            | _ -> Html.h1 "Not found"
+
+        Router.router [
+            Router.onUrlChanged (UrlChanged >> dispatch)
+            Router.application currentPage
+        ]
+
+    // let renderPageFromUrl urlSegments = function
+    //     | [ ] ->
+
+    let renderError (errorMsg: string) =
+      Html.h1 [
+        prop.style [ style.color.red ]
+        prop.text errorMsg
+      ]
+
+    let renderSummaryViews products =
+        products
+        |> List.map storeItemSummaryView
+        |> Html.fragment
+
+    let spinner =
+      Html.div [
+        prop.style [ style.textAlign.center; style.marginTop 20 ]
+        prop.children [
+          Html.i [
+            prop.className "fa fa-cog fa-spin fa-2x"
           ]
         ]
       ]
-    ]
-  ]
 
-let renderItems (items: StoreProduct list) =  Html.fragment [ for item in items -> renderItem item ]
+    let renderWebPage = function
+        | LandingPage delayedPageModel ->
+            match delayedPageModel with
+            | OperationNotStarted -> Html.none
+            | OperationInProgress -> spinner
+            | ResultFromServer (Error errorMsg) -> renderError errorMsg
+            | ResultFromServer (Ok items) -> renderSummaryViews items
+        | ProductDetails storeProduct -> renderProductPage storeProduct
+        | NotFound -> Html.h1 "Not found"
 
-let spinner =
-  Html.div [
-    prop.style [ style.textAlign.center; style.marginTop 20 ]
-    prop.children [
-      Html.i [
-        prop.className "fa fa-cog fa-spin fa-2x"
-      ]
-    ]
-  ]
-
-let renderStoreCatalogue = function
-  | OperationNotStarted -> Html.none
-  | OperationInProgress -> spinner
-  | ResultFromServer (Error errorMsg) -> renderError errorMsg
-  | ResultFromServer (Ok items) -> renderItems items
-
-
-let render (state: Model) (dispatch: EventMessage -> unit) =
-  Html.div [
-    prop.style [ style.padding 20 ]
-    prop.children [
-      Html.h1 [
-        prop.className "title"
-        prop.text "Mock E-Commerce"
-      ]
-
-      renderStoreCatalogue state.Products
-    ]
-  ]
+    let render (state: Model) (dispatch: EventMessage -> unit) =
+        Html.div [
+            prop.style [ style.padding 20 ]
+            prop.children [
+              Html.h1 [ prop.className "title"; prop.text "SAFE E-Commerce Demo" ]
+              renderWebPage state.CurrentPage
+            ]
+        ]
 
 #if DEBUG
 open Elmish.Debug
 open Elmish.HMR
 #endif
+
+open ApplicationRendering
 
 Program.mkProgram init update render
 #if DEBUG
