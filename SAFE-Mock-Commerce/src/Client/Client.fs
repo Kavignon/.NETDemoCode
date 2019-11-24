@@ -134,22 +134,6 @@ module ApplicationView =
 module ApplicationRendering =
     open ApplicationView
 
-    let render state dispatch =
-        let currentPage =
-            match state.CurrentUrl with
-            | [ ] -> Html.h1 "Home"
-            | [ "users" ] -> Html.h1 "Users page"
-            | [ "users"; Route.Int userId ] -> Html.h1 (sprintf "User ID %d" userId)
-            | _ -> Html.h1 "Not found"
-
-        Router.router [
-            Router.onUrlChanged (UrlChanged >> dispatch)
-            Router.application currentPage
-        ]
-
-    // let renderPageFromUrl urlSegments = function
-    //     | [ ] ->
-
     let renderError (errorMsg: string) =
       Html.h1 [
         prop.style [ style.color.red ]
