@@ -96,23 +96,59 @@ module ApplicationView =
       ]
 
     let productDetailView (product: StoreProduct) =
-        Html.div [ // page div
+        Html.div [
             prop.className (sprintf "product-page-idd%s" product.Id)
             prop.style [ style.marginTop 20; style.marginBottom 20 ]
             prop.children [
                 Html.div [
-                    prop.style [ style.flexDirection.row ]
-                    prop.children [
-                        Html.img [ prop.src product.Image; prop.alt product.Name ]
-                        Html.div [ // product detail div
-                          prop.style [ style.flexDirection.column ]
-                      ]
+                    div [ "columns" ] [
+                        div [ "column" ] [
+                            Html.img [
+                                prop.src product.Image
+                                prop.alt "product image"
+                                prop.style [
+                                    style.width 400
+                                    style.height 450
+                                    style.paddingTop 35
+                                ]
+                            ]
+                        ]
+                        div [ "column" ] [
+                            Html.div [
+                                prop.className "details-container"
+                                prop.fontSize 100
+                                prop.style [ style.paddingRight 100; style.marginRight 100 ]
+                                prop.children [
+                                    Html.div [
+                                        prop.className "detail-box-container"
+                                        prop.children [
+                                            Html.div [
+                                                prop.className "box"
+                                                prop.style [
+                                                        style.marginTop 15
+                                                        style.marginBottom 15
+                                                    ]
+                                                prop.children [
+                                                    Html.div [
+                                                        prop.text product.Name
+                                                    ]
+                                                    Html.div [
+                                                        prop.text (sprintf "Price: CDN$ %.2f" product.Price)
+                                                        prop.style [ style.color "blue" ]
+                                                    ]
+                                                ]
+                                            ]
+                                        ]
+                                    ]
+                                ]
+                            ]
+                        ]
                     ]
                 ]
             ]
         ]
 
-    let storeItemSummaryView (product: StoreProduct) =
+    let storeItemSummaryView (product: StoreProduct) dispatch =
         Html.div [
         prop.className "box"
         prop.style [
