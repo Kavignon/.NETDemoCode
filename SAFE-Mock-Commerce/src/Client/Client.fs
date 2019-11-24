@@ -34,6 +34,29 @@ module ApplicationModel =
 
 open ApplicationModel
 
+module UrlHandling =
+    open Browser
+
+    let hashPrefix = sprintf "#%s"
+
+    let combine xs = List.fold (sprintf "%s/%s") "" xs
+
+    let navigationEvent = "NavigationEvent"
+
+    let navigate xs : Elmish.Cmd<_> =
+        let nextUrl = hashPrefix (combine xs)
+        [ fun _ ->
+            history.pushState ((), "", nextUrl)
+            let ev = CustomEvent.Create ""
+            ev.initEvent (navigationEvent, true, true)
+            window.dispatchEvent ev |> ignore ]
+
+    let updateSiteUrl (state: Model) =
+        match state.CurrentPage with
+        | LandingPage _ -> { state with CurrentUrl = [] }
+        | ProductDetails product -> { state with CurrentUrl = [ "products"; product.Id ] }
+        | NotFound -> { state with CurrentUrl = [ "Not Found"] }
+
 let loadStoreProducts = async {
     do! Async.Sleep 1000
     let! products = remoteWebStoreApi.fetchProducts()
@@ -43,14 +66,6 @@ let loadStoreProducts = async {
         return FetchProducts (Completed (Ok products))
 }
 
-let updateSiteUrl (state: Model) =
-    match state.CurrentPage with
-    | LandingPage _ -> { state with CurrentUrl = [] }
-    | ProductDetails product -> { state with CurrentUrl = [ "products"; product.Id ] }
-    | NotFound -> { state with CurrentUrl = [ "Not Found"] }
-
-let navigateToDetailUrl product = Html.none
-
 let update (msg : EventMessage) (currentModel : Model) : Model * Cmd<EventMessage> =
     match msg with
     | FetchProducts Begin ->
@@ -59,7 +74,7 @@ let update (msg : EventMessage) (currentModel : Model) : Model * Cmd<EventMessag
       nextState, nextCmd
 
     | FetchProducts (Completed products) ->
-      let nextState = updateSiteUrl { currentModel with CurrentPage = LandingPage (ResultFromServer products) }
+      let nextState = UrlHandling.updateSiteUrl { currentModel with CurrentPage = LandingPage (ResultFromServer products) }
       nextState, Cmd.none
 
     | UrlChanged urlSegments ->
@@ -67,8 +82,8 @@ let update (msg : EventMessage) (currentModel : Model) : Model * Cmd<EventMessag
         nextState, Cmd.none
 
     | LoadProductPage product ->
-        let nextState = updateSiteUrl { currentModel with CurrentPage = ProductDetails product }
-        nextState, Cmd.none
+        let nextState = UrlHandling.updateSiteUrl { currentModel with CurrentPage = ProductDetails product }
+        nextState, UrlHandling.navigate [ product.Id ]
 
     | ProductPageLoaded ->
         currentModel, Cmd.none
@@ -139,6 +154,7 @@ module ApplicationView =
                                 prop.width 50
                                 prop.style [ style.textDecoration.underline ]
                                 prop.text product.Name
+                                prop.onClick (fun _ -> dispatch (LoadProductPage product) )
                             ]
                             Html.div [
                                 prop.fontSize 25
@@ -161,9 +177,9 @@ module ApplicationRendering =
         prop.text errorMsg
       ]
 
-    let renderSummaryViews products =
+    let renderSummaryViews products dispatch =
         products
-        |> List.map storeItemSummaryView
+        |> List.map(fun p -> storeItemSummaryView p dispatch)
         |> Html.fragment
 
     let spinner =
@@ -176,13 +192,14 @@ module ApplicationRendering =
         ]
       ]
 
-    let renderWebPage = function
+    let renderWebPage model dispatch =
+        match model.CurrentPage with
         | LandingPage delayedPageModel ->
             match delayedPageModel with
             | OperationNotStarted -> Html.none
             | OperationInProgress -> spinner
             | ResultFromServer (Error errorMsg) -> renderError errorMsg
-            | ResultFromServer (Ok items) -> renderSummaryViews items
+            | ResultFromServer (Ok items) -> renderSummaryViews items dispatch
         | ProductDetails storeProduct -> productDetailView storeProduct
         | NotFound -> Html.h1 "Not found"
 
@@ -192,7 +209,7 @@ module ApplicationRendering =
                 prop.style [ style.padding 20 ]
                 prop.children [
                   Html.h1 [ prop.className "title"; prop.text "SAFE E-Commerce Demo" ]
-                  renderWebPage state.CurrentPage
+                  renderWebPage state dispatch
                 ]
             ]
 
