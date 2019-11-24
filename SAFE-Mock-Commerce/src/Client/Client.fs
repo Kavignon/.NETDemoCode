@@ -203,6 +203,10 @@ module ApplicationView =
                                 prop.width 50
                                 prop.text product.ReviewAverage
                             ]
+                            Html.div [
+                                prop.text (sprintf "CDN$ %.2f" product.Price)
+                                prop.style [ style.color "blue" ]
+                            ]
                         ]
                     ]
                 ]
