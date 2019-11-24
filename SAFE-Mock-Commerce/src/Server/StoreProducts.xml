@@ -5,7 +5,7 @@
         <Category Value="Fantasy"/>
         <Publisher Value="DAW Books" />
         <Name Value="Name of the Wind"/>
-        <ImageLink Valu="https://i.gr-assets.com/images/S/compressed.photo.goodreads.com/books/1515589515l/186074._SX318_.jpg"
+        <ImageLink Value="https://i.gr-assets.com/images/S/compressed.photo.goodreads.com/books/1515589515l/186074._SX318_.jpg" />
         <Formats>
             <Format Value="Mass paper back"/>
             <Format Value="Paper back"/>
@@ -62,7 +62,7 @@ So begins a tale unequaled in fantasy literature—the story of a hero told in h
         <Height Value="7.31"/>
         <Width Value="2.94"/>
         <Depth Value="10.44"/>
-        <ImageLink Value="https://images-na.ssl-images-amazon.com/images/I/41Q-TgIOpiL._SX397_BO1,204,203,200_.jpg" />
+        <ImageLink Value="https://images-na.ssl-images-amazon.com/images/I/41Q-TgIOpiL._SX397_BO1,204,203,200_.jpg"/>
     </book>
     <headphone>
         <Manufacturer Name="Sony"/>
