@@ -112,8 +112,14 @@ module ApplicationView =
                 prop.style [ style.marginLeft 20 ]
                 prop.children [
                   Html.i [prop.className "fa fa-poll fa-2x"]
+
                   Html.span [
-                    prop.style [ style.marginLeft 10; style.marginRight 10 ]
+                    prop.style [
+                        style.marginLeft 10
+                        style.marginRight 10
+                    ]
+                    prop.fontSize 25
+                    prop.width 50
                     prop.text product.ReviewAverage
                   ]
                 ]
