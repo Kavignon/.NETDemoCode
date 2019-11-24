@@ -105,37 +105,52 @@ module ApplicationView =
           style.marginBottom 15
         ]
         prop.children [
-          div [ "columns"; "is-mobile" ] [
-            div [ "column"; "is-narrow" ] [
-              Html.div [
-                prop.className [ "icon" ]
-                prop.style [ style.marginLeft 20 ]
-                prop.children [
-                  Html.i [prop.className "fa fa-poll fa-2x"]
-
-                  Html.span [
-                    prop.style [
-                        style.marginLeft 10
-                        style.marginRight 10
+            div [ "columns"; "is-mobile"] [
+                div [ "column"; "is-narrow" ] [
+                    Html.div [
+                        prop.className [ "product-icon" ]
+                        prop.src product.Image
+                        prop.style [ style.marginLeft 20 ]
+                        prop.children [
+                            Html.img [
+                                prop.src product.Image
+                                prop.alt "product image"
+                                prop.style [
+                                    style.width 120
+                                    style.height 150
+                                    style.paddingTop 15
+                                ]
+                            ]
+                        ]
                     ]
-                    prop.fontSize 25
-                    prop.width 50
-                    prop.text product.ReviewAverage
-                  ]
                 ]
-              ]
-            ]
 
-            div [ "column" ] [
-              Html.a [
-                prop.style [ style.textDecoration.underline ]
-                prop.custom("target", navigateToDetailUrl product)
-                prop.text product.Name
-              ]
+                div [ "column" ] [
+                    Html.div [
+                        prop.style [
+                            style.flexDirection.column
+                            style.marginLeft 25
+                            style.marginTop 10
+                        ]
+                        prop.fontSize 50
+                        prop.children [
+                            Html.a [
+                                prop.fontSize 75
+                                prop.width 50
+                                prop.style [ style.textDecoration.underline ]
+                                prop.text product.Name
+                            ]
+                            Html.div [
+                                prop.fontSize 25
+                                prop.width 50
+                                prop.text product.ReviewAverage
+                            ]
+                        ]
+                    ]
+                ]
             ]
-          ]
         ]
-      ]
+    ]
 
 module ApplicationRendering =
     open ApplicationView
