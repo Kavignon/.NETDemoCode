@@ -10,6 +10,8 @@ open Shared
 open BackendInteractions
 open BackendInteractions.Cmd
 
+open ProductImageComponent
+
 module ApplicationModel =
     type AppPage =
         | LandingPage of DelayedResult<Result<StoreProduct list, string>>
@@ -108,17 +110,7 @@ module ApplicationView =
             prop.children [
                 Html.div [
                     div [ "columns" ] [
-                        div [ "column" ] [
-                            Html.img [
-                                prop.src product.Image
-                                prop.alt "product image"
-                                prop.style [
-                                    style.width 400
-                                    style.height 450
-                                    style.paddingTop 35
-                                ]
-                            ]
-                        ]
+                        div [ "column" ] [ (product.Image, 400, 450) |||> makeProductImage ]
                         div [ "column" ] [
                             Html.div [
                                 prop.className "details-container"
@@ -168,17 +160,7 @@ module ApplicationView =
                         prop.className [ "product-icon" ]
                         prop.src product.Image
                         prop.style [ style.marginLeft 20 ]
-                        prop.children [
-                            Html.img [
-                                prop.src product.Image
-                                prop.alt "product image"
-                                prop.style [
-                                    style.width 120
-                                    style.height 150
-                                    style.paddingTop 15
-                                ]
-                            ]
-                        ]
+                        prop.children [ (product.Image, 120, 150) |||> makeProductImage ]
                     ]
                 ]
 

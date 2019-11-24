@@ -10,6 +10,7 @@
     <Compile Include="Version.fs" />
     <Compile Include="Pages.fs" />
     <Compile Include="Utils/InteractingWithServer.fs" />
+    <Compile Include="Components/Common/ProductImageComponent.fs" />
     <Compile Include="Client.fs" />
   </ItemGroup>
   <ItemGroup>
