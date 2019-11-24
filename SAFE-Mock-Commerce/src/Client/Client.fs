@@ -162,16 +162,22 @@ module ApplicationRendering =
             | OperationInProgress -> spinner
             | ResultFromServer (Error errorMsg) -> renderError errorMsg
             | ResultFromServer (Ok items) -> renderSummaryViews items
-        | ProductDetails storeProduct -> renderProductPage storeProduct
+        | ProductDetails storeProduct -> productDetailView storeProduct
         | NotFound -> Html.h1 "Not found"
 
     let render (state: Model) (dispatch: EventMessage -> unit) =
-        Html.div [
-            prop.style [ style.padding 20 ]
-            prop.children [
-              Html.h1 [ prop.className "title"; prop.text "SAFE E-Commerce Demo" ]
-              renderWebPage state.CurrentPage
+        let page =
+            Html.div [
+                prop.style [ style.padding 20 ]
+                prop.children [
+                  Html.h1 [ prop.className "title"; prop.text "SAFE E-Commerce Demo" ]
+                  renderWebPage state.CurrentPage
+                ]
             ]
+
+        Router.router [
+            Router.onUrlChanged (UrlChanged >> dispatch)
+            Router.application page
         ]
 
 #if DEBUG
