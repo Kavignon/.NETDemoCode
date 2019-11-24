@@ -2,10 +2,6 @@ namespace Shared
 open System
 open FSharp.Data
 
-type Counter = { Value : int }
-
-// Will be compiled to Js -> bundle.js
-
 type ProductDimension = {
     Height: float
     Width: float
