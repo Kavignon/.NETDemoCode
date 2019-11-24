@@ -5,6 +5,7 @@
         <Category Value="Fantasy"/>
         <Publisher Value="DAW Books" />
         <Name Value="Name of the Wind"/>
+        <ImageLink Value="https://i.gr-assets.com/images/S/compressed.photo.goodreads.com/books/1515589515l/186074._SX318_.jpg" />
         <Formats>
             <Format Value="Mass paper back"/>
             <Format Value="Paper back"/>
@@ -61,6 +62,7 @@ So begins a tale unequaled in fantasy literature—the story of a hero told in h
         <Height Value="7.31"/>
         <Width Value="2.94"/>
         <Depth Value="10.44"/>
+        <ImageLink Value="https://images-na.ssl-images-amazon.com/images/I/41Q-TgIOpiL._SX397_BO1,204,203,200_.jpg"/>
     </book>
     <headphone>
         <Manufacturer Name="Sony"/>
@@ -77,6 +79,7 @@ So begins a tale unequaled in fantasy literature—the story of a hero told in h
         <IsWireless Value="true"/>
         <BatteryLife Value="30"/>
         <IsNoiseCancelled Value="true"/>
+        <ImageLink Value="https://images-na.ssl-images-amazon.com/images/I/51IdLe-%2B6kL._SX466_.jpg"/>
     </headphone>
     <headphone>
         <Manufacturer Name="Bose"/>
@@ -93,6 +96,7 @@ So begins a tale unequaled in fantasy literature—the story of a hero told in h
         <IsWireless Value="true"/>
         <BatteryLife Value="20"/>
         <IsNoiseCancelled Value="true"/>
+        <ImageLink Value="https://images-na.ssl-images-amazon.com/images/I/71%2BQ8cDXQ7L._SY679_.jpg"/>
     </headphone>
     <computer>
         <Manufacturer>Asus</Manufacturer>

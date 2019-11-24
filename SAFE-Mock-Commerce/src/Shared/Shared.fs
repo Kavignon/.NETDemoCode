@@ -2,10 +2,6 @@ namespace Shared
 open System
 open FSharp.Data
 
-type Counter = { Value : int }
-
-// Will be compiled to Js -> bundle.js
-
 type ProductDimension = {
     Height: float
     Width: float
@@ -40,6 +36,7 @@ type SupportedLanguage =
 
 type CommonProductInformation  = {
     Name:           string
+    ImagePath:      string
     Weight:         float
     ShippingWeight: float
     AverageReviews: float
@@ -216,6 +213,11 @@ with
         match x with
         | Book(b, _) -> b.Details.AverageReviews
         | WirelessHeadphones (wh, _) -> wh.Details.AverageReviews
+
+    member x.Image =
+        match x with
+        | Book (b, _) -> b.Details.ImagePath
+        | WirelessHeadphones (wh, _) -> wh.Details.ImagePath
 
 module ShoppingCart =
 
