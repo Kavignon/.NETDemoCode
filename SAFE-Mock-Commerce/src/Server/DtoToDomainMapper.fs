@@ -76,7 +76,7 @@ let makeProductInformationFrom productDto =
             Price = float headphoneDto.Price.Value
             Color = convertToProductColor headphoneDto.Color.Value
             Brand = convertToBrand headphoneDto.Manufacturer.Name
-            ImagePath = headphoneDto.ImageLink
+            ImagePath = headphoneDto.ImageLink.Value
         }
     | ReadingMaterialDto readingDto ->
         {
@@ -88,7 +88,7 @@ let makeProductInformationFrom productDto =
             Price = float readingDto.Price.Value
             Color = Red // Provide book color in definition
             Brand = Toshiba //Waiting for up book publisher companies in definition
-            ImagePath = readingDto.ImageLink
+            ImagePath = readingDto.ImageLink.Value
         }
 
 let convertToWirelessHeadphones productCommonInfo headphoneDetails =
