@@ -22,6 +22,7 @@ module ApplicationModel =
      }
 
     type EventMessage =
+        | LoadHomePage
         | FetchProducts of AsyncTransaction<Result<StoreProduct list, string>>
         | UrlChanged of string list
         | LoadProductPage of StoreProduct
@@ -43,8 +44,8 @@ module UrlHandling =
 
     let navigationEvent = "NavigationEvent"
 
-    let navigate xs : Elmish.Cmd<_> =
-        let nextUrl = hashPrefix (combine xs)
+    let navigate (segments: string list) : Elmish.Cmd<_> =
+        let nextUrl = if segments.Length = 0 then "" else  hashPrefix (combine segments)
         [ fun _ ->
             history.pushState ((), "", nextUrl)
             let ev = CustomEvent.Create ""
@@ -68,6 +69,11 @@ let loadStoreProducts = async {
 
 let update (msg : EventMessage) (currentModel : Model) : Model * Cmd<EventMessage> =
     match msg with
+    | LoadHomePage ->
+        let nextState = { currentModel with CurrentUrl = []; CurrentPage = LandingPage OperationNotStarted }
+        UrlHandling.navigate [] |> ignore
+        nextState, Cmd.ofMsg (FetchProducts Begin)
+
     | FetchProducts Begin ->
       let nextState = { currentModel with CurrentPage = LandingPage OperationInProgress }
       let nextCmd = fromAsync loadStoreProducts
@@ -245,6 +251,20 @@ module ApplicationRendering =
                 prop.style [ style.padding 20 ]
                 prop.children [
                   Html.h1 [ prop.className "title"; prop.text "SAFE E-Commerce Demo" ]
+                  Html.button [
+                      prop.className "btn"
+                      prop.text "Home"
+                      prop.height 50
+                      prop.width 50
+                      prop.onClick (fun _ -> dispatch LoadHomePage)
+                      prop.children [
+                          Html.i [
+                              prop.className "fa fa-home"
+                          ]
+                      ]
+                  ]
+                  // <button class="btn"><i class="fa fa-home"></i></button>
+                  //<a href="http://example.com"><img src="images/facebook.png" /></a>
                   renderWebPage state dispatch
                 ]
             ]
