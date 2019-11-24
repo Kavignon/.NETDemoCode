@@ -2,15 +2,16 @@ module Client
 
 open Elmish
 open Elmish.React
+
 open Feliz
+open Feliz.MaterialUI
 open Feliz.Router
-open Fable.Remoting.Client
 
 open Shared
 open BackendInteractions
 open BackendInteractions.Cmd
 
-open ProductImageComponent
+open CommonReactComponent
 
 module ApplicationModel =
     type AppPage =
@@ -130,9 +131,9 @@ module ApplicationView =
                                                     Html.div [
                                                         prop.text product.Name
                                                     ]
+                                                    makePriceComponent product.Price
                                                     Html.div [
-                                                        prop.text (sprintf "Price: CDN$ %.2f" product.Price)
-                                                        prop.style [ style.color "blue" ]
+                                                        Mui.rating [ prop.value product.ReviewAverage; prop.readOnly true ]
                                                     ]
                                                 ]
                                             ]
@@ -183,12 +184,13 @@ module ApplicationView =
                             Html.div [
                                 prop.fontSize 25
                                 prop.width 50
-                                prop.text product.ReviewAverage
+                                prop.children [
+                                    Html.div [
+                                        Mui.rating [ prop.value product.ReviewAverage; prop.readOnly true ]
+                                    ]
+                                ]
                             ]
-                            Html.div [
-                                prop.text (sprintf "CDN$ %.2f" product.Price)
-                                prop.style [ style.color "blue" ]
-                            ]
+                            makePriceComponent product.Price
                         ]
                     ]
                 ]
