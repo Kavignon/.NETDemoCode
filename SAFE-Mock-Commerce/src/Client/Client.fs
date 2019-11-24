@@ -24,6 +24,8 @@ module ApplicationModel =
     type EventMessage =
         | FetchProducts of AsyncTransaction<Result<StoreProduct list, string>>
         | UrlChanged of string list
+        | LoadProductPage of StoreProduct
+        | ProductPageLoaded
 
     let init() =
         let initialModel = { CurrentUrl = [ ]; CurrentPage = LandingPage OperationNotStarted }
@@ -41,6 +43,14 @@ let loadStoreProducts = async {
         return FetchProducts (Completed (Ok products))
 }
 
+let updateSiteUrl (state: Model) =
+    match state.CurrentPage with
+    | LandingPage _ -> { state with CurrentUrl = [] }
+    | ProductDetails product -> { state with CurrentUrl = [ "products"; product.Id ] }
+    | NotFound -> { state with CurrentUrl = [ "Not Found"] }
+
+let navigateToDetailUrl product = Html.none
+
 let update (msg : EventMessage) (currentModel : Model) : Model * Cmd<EventMessage> =
     match msg with
     | FetchProducts Begin ->
@@ -49,12 +59,19 @@ let update (msg : EventMessage) (currentModel : Model) : Model * Cmd<EventMessag
       nextState, nextCmd
 
     | FetchProducts (Completed products) ->
-      let nextState = { currentModel with CurrentPage = LandingPage (ResultFromServer products) }
+      let nextState = updateSiteUrl { currentModel with CurrentPage = LandingPage (ResultFromServer products) }
       nextState, Cmd.none
 
     | UrlChanged urlSegments ->
         let nextState = { currentModel with CurrentUrl = urlSegments }
         nextState, Cmd.none
+
+    | LoadProductPage product ->
+        let nextState = updateSiteUrl { currentModel with CurrentPage = ProductDetails product }
+        nextState, Cmd.none
+
+    | ProductPageLoaded ->
+        currentModel, Cmd.none
 
 module ApplicationView =
     let div (classes: string list) (children: ReactElement list) =
@@ -62,6 +79,23 @@ module ApplicationView =
         prop.className classes
         prop.children children
       ]
+
+    let productDetailView (product: StoreProduct) =
+        Html.div [ // page div
+            prop.className (sprintf "product-page-idd%s" product.Id)
+            prop.style [ style.marginTop 20; style.marginBottom 20 ]
+            prop.children [
+                Html.div [
+                    prop.style [ style.flexDirection.row ]
+                    prop.children [
+                        Html.img [ prop.src product.Image; prop.alt product.Name ]
+                        Html.div [ // product detail div
+                          prop.style [ style.flexDirection.column ]
+                      ]
+                    ]
+                ]
+            ]
+        ]
 
     let storeItemSummaryView (product: StoreProduct) =
         Html.div [
