@@ -129,7 +129,7 @@ module ApplicationView =
             div [ "column" ] [
               Html.a [
                 prop.style [ style.textDecoration.underline ]
-                prop.custom("target", "_blank")
+                prop.custom("target", navigateToDetailUrl product)
                 prop.text product.Name
               ]
             ]
