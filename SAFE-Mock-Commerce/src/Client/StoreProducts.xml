@@ -1,0 +1,133 @@
+<?xml version="1.0" standalone="yes"?>
+<items>
+    <book>
+        <AuthorName Value="Patrick Rothfuss"/>
+        <Category Value="Fantasy"/>
+        <Publisher Value="DAW Books" />
+        <Name Value="Name of the Wind"/>
+        <ImageLink Valu="https://i.gr-assets.com/images/S/compressed.photo.goodreads.com/books/1515589515l/186074._SX318_.jpg"
+        <Formats>
+            <Format Value="Mass paper back"/>
+            <Format Value="Paper back"/>
+            <Format Value="Hard cover"/>
+            <Format Value="Kindle"/>
+        </Formats>
+        <ISBN Value="978-0756404741" />
+        <Price Value="36.95"/>
+        <Languages>
+            <Language Value="English"/>
+        </Languages>
+        <ShippingWeight Value="0.907"/>
+        <PageCount Value="687"/>
+        <Format Value ="Paperback" />
+        <ReviewAverage Value="4.2"/>
+        <InStock Value="true"/>
+        <Quantity Value="20"/>
+        <Height Value="7.31"/>
+        <Width Value="2.94"/>
+        <Depth Value="10.44"/>
+        <ReleaseDate Value="March 27 2007"/>
+        <Summary Value="My name is Kvothe.
+
+I have stolen princesses back from sleeping barrow kings. I burned down the town of Trebon. I have spent the night with Felurian and left with both my sanity and my life. I was expelled from the University at a younger age than most people are allowed in. I tread paths by moonlight that others fear to speak of during day. I have talked to Gods, loved women, and written songs that make the minstrels weep.
+
+You may have heard of me.
+
+So begins a tale unequaled in fantasy literature—the story of a hero told in his own voice. It is a tale of sorrow, a tale of survival, a tale of one man’s search for meaning in his universe, and how that search, and the indomitable will that drove it, gave birth to a legend.  "/>
+    </book>
+    <book>
+        <AuthorName Value="Jon Skeet"/>
+        <Publisher Value="Manning Editions" />
+        <Category Value="Computer Sciences"/>
+        <Name Value="C# in depth, Fourth edition"/>
+        <Languages>
+            <Language Value="English"/>
+        </Languages>
+        <Formats>
+            <Format Value="Paper back"/>
+            <Format Value="Kindle"/>
+        </Formats>
+        <Summary Value="C# in Depth, Fourth Edition is your key to unlocking the powerful new features added to the language in C# 5, 6, and 7. Following the expert guidance of C# legend Jon Skeet, you'll master asynchronous functions, expression-bodied members, interpolated strings, tuples, and much more.
+        The powerful, flexible C# programming language is the foundation of .NET development. Even after two decades of success, it's still getting better! Exciting new features in C# 6 and 7 make it easier than ever to take on big data applications, cloud-centric web development, and cross-platform software using .NET Core. There's never been a better time to learn C# in depth.
+        C# in Depth, Fourth Edition is a revised edition of the bestseller written by C# legend Jon Skeet. This authoritative and engaging guide is your key to unlocking this powerful language, including the new features of C# 6 and 7. In it, Jon introduces expression-bodied members, interpolated strings, pattern matching, and more. Real-world examples drive it all home. By the end of this awesome book, you'll be writing C# code with skill, style, and confidence."/>
+        <ReleaseDate Value="March 23 2019" />
+        <ISBN Value="978-1617294532" />
+        <Price Value="66.50"/>
+        <Language Value="English"/>
+        <ShippingWeight Value="2.213"/>
+        <PageCount Value="514"/>
+        <ReviewAverage Value="4.2"/>
+        <InStock Value="true"/>
+        <Quantity Value="1"/>
+        <Height Value="7.31"/>
+        <Width Value="2.94"/>
+        <Depth Value="10.44"/>
+        <ImageLink Value="https://images-na.ssl-images-amazon.com/images/I/41Q-TgIOpiL._SX397_BO1,204,203,200_.jpg" />
+    </book>
+    <headphone>
+        <Manufacturer Name="Sony"/>
+        <Color Value="Black"/>
+        <Fit Value="OverEar"/>
+        <Model Name="WH1000XM3"/>
+        <Height Value="7.31"/>
+        <Width Value="2.94"/>
+        <Depth Value="10.44"/>
+        <Price Value="348.00"/>
+        <ReleaseDate Value="2018-07-11"/>
+        <ReviewAverage Value="4.6"/>
+        <Weigth Value="2.95"/>
+        <IsWireless Value="true"/>
+        <BatteryLife Value="30"/>
+        <IsNoiseCancelled Value="true"/>
+        <ImageLink Value="https://images-na.ssl-images-amazon.com/images/I/51IdLe-%2B6kL._SX466_.jpg"/>
+    </headphone>
+    <headphone>
+        <Manufacturer Name="Bose"/>
+        <Color Value="White"/>
+        <Fit Value="OverEar"/>
+        <Model Name="QuietComfort 35 Series II"/>
+        <Height Value="3.2"/>
+        <Width Value="6.7"/>
+        <Depth Value="7.31"/>
+        <Price Value="349.00"/>
+        <ReleaseDate Value="2017-02-12"/>
+        <ReviewAverage Value="4.4"/>
+        <Weigth Value="2.25"/>
+        <IsWireless Value="true"/>
+        <BatteryLife Value="20"/>
+        <IsNoiseCancelled Value="true"/>
+        <ImageLink Value="https://images-na.ssl-images-amazon.com/images/I/71%2BQ8cDXQ7L._SY679_.jpg"/>
+    </headphone>
+    <computer>
+        <Manufacturer>Asus</Manufacturer>
+        <Model Series="ZenBook" Number="UX433FA-DH74"/>
+        <Resolution Value="FHD"/>
+        <ReviewAverage Value="4.7"/>
+        <Weight Value="1.18"/>
+        <Ram Value="16Gb"/>
+        <Storage Value="512Gb" HardDiskTechnology="SSD"/>
+        <OperatingSystem Value="Windows 10"/>
+        <Price Value="1499.99"/>
+        <Color Value="Royal Blue"/>
+        <Depth Value="0.32" />
+        <Height Value="0.016"/>
+        <Width Value="0.198"/>
+        <CPU Manufacturer="Intel" Series="Core-i7" SeriesModel="8565u" CoreCount="4" ClockSpeed="1.80" OverclockedSpeed="4.60"/>
+    </computer>
+        <computer>
+        <Manufacturer>Apple</Manufacturer>
+        <Model Series="Macbook" Number="7th-generation"/>
+        <ReviewAverage Value="4.1"/>
+        <Resolution Value="4K"/>
+        <Weight Value="1.83"/>
+        <Ram Value="8Gb"/>
+        <Storage Value="128Gb" HardDiskTechnology="SSD"/>
+        <OperatingSystem Value="OS X 10.8 Mountain Lion"/>
+        <Price Value="1729.00"/>
+        <Color Value="Space Grey"/>
+        <Depth Value="0.3493" />
+        <Height Value="0.0155"/>
+        <Width Value="0.2407"/>
+        <CPU Manufacturer="Intel" Series="Core-i5" SeriesModel="8565u" CoreCount="2" ClockSpeed="2.30" OverclockedSpeed="3.60"/>
+    </computer>
+</items>
