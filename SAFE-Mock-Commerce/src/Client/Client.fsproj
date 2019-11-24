@@ -10,11 +10,12 @@
     <Compile Include="Version.fs" />
     <Compile Include="Pages.fs" />
     <Compile Include="Utils/InteractingWithServer.fs" />
-    <Compile Include="Components/Common/ProductImageComponent.fs" />
+    <Compile Include="Components/Common/CommonReusableReactComponents.fs" />
     <Compile Include="Client.fs" />
   </ItemGroup>
   <ItemGroup>
     <PackageReference Include="Feliz" Version="0.68.2" />
+    <PackageReference Include="Feliz.MaterialUI" Version="0.8.3" />
     <PackageReference Include="Feliz.Router" Version="1.7.0" />
     <PackageReference Include="FSharp.Data" Version="3.3.2" />
   </ItemGroup>
